@@ -16,6 +16,7 @@ class Form extends React.Component{
 		this.handlePlatformChange = this.handlePlatformChange.bind(this);
 		this.requestData = this.requestData.bind(this);
 		this.addForm = this.addForm.bind(this);
+		this.removeForm = this.removeForm.bind(this);
 	}
 
 
@@ -36,6 +37,39 @@ class Form extends React.Component{
 		platforms[index] = event.target.value;
 
 		this.setState({platforms: platforms});
+	}
+
+	//adds additional forms for more users
+	addForm(event){
+		event.preventDefault();
+		const formNumber = this.state.forms;
+		const users = this.state.users;
+		const platforms = this.state.platforms;
+		this.setState({
+			users: users.concat(['']),
+			platforms: platforms.concat(['pc']),
+			forms: formNumber.concat([true])
+		});
+
+	}
+
+	removeForm(event){
+		event.preventDefault();
+
+		const formNumber = this.state.forms;
+		const users = this.state.users;
+		const platforms = this.state.platforms;
+		
+		users.pop();
+		platforms.pop();
+		formNumber.pop();
+
+		this.setState({
+			users: users,
+			platforms: platforms,
+			forms: formNumber
+		});
+
 	}
 
 	//requests data from api
@@ -87,19 +121,6 @@ class Form extends React.Component{
 		}
 
 	}
-	//adds additional forms for more users
-	addForm(event){
-		event.preventDefault();
-		const formNumber = this.state.forms;
-		const users = this.state.users;
-		const platforms = this.state.platforms;
-		this.setState({
-			users: users.concat(['']),
-			platforms: platforms.concat(['pc']),
-			forms: formNumber.concat([true])
-		});
-
-	}
 
 	render(){
 		let formNumber = this.state.forms;
@@ -126,6 +147,7 @@ class Form extends React.Component{
 				</label>
 				<input type='submit' value='Get Info' />
 				<button onClick={this.addForm}>Add Player</button>
+				<button onClick={this.removeForm}>Remove Player</button>
 			</form>
 		);
 	}
