@@ -128,9 +128,9 @@ class Form extends React.Component{
 			return(
 				<div key={index} className="userForm">
 					Name:
-					<input className={index} type='text' value={this.state.users[index]} onChange={this.handleUserChange} />
+					<input className={index} type='text' value={this.state.users[index]} onChange={this.handleUserChange} required />
 					Platform:
-					<select className={index} value={this.state.platforms[index]} onChange={this.handlePlatformChange}>
+					<select className={index} value={this.state.platforms[index]} onChange={this.handlePlatformChange} required>
 						<option>PC</option>
 						<option>PSN</option>
 						<option>XBL</option>
@@ -172,7 +172,6 @@ class Site extends React.Component{
 	render(){
 
 		const data = this.state.data;
-		console.log(data);
 		//parses the data to get necessary info
 		const parseUserData = data.map((curr, index) => {
 			if(curr.error){
@@ -181,11 +180,11 @@ class Site extends React.Component{
 				);
 			}
 
+			console.log(curr);
 			
 			const user = curr.epicUserHandle;
 			const platform = curr.platformNameLong;
 			const lifetimeStats = curr.lifeTimeStats;
-			const recentMatches = curr.recentMatches;
 			const stats = curr.stats;
 
 			const lifetime = lifetimeStats.map((curr,index) =>{
@@ -193,17 +192,68 @@ class Site extends React.Component{
 				const value = curr.value;
 
 				return(
-					<div className="lifeTimeStats">
-						<div className={key}>{key}</div>
+					<div className={key + ' subcategory'}>
 						<div>{value}</div>
 					</div>
 				);
 			});
+
+			//parses both season data and lifetime data
+			const stats_per_mode = Object.entries(stats).map((curr,index) =>{
+				let key;
+				switch(curr[0]){
+
+						case "p2":
+							key = "lifetime-solos";
+							break;
+
+						case "p10":
+							key = "lifetime-duos";
+							break;
+
+						case "p9":
+							key = "lifetime-squads";
+							break;
+
+						case "curr_p2":
+							key = "current-season-solos";
+							break;
+
+						case "curr_p10":
+							key = "current-season-duos";
+							break;
+
+						case "curr_p9":
+							key = "current-season-squads";
+							break;
+
+						default:
+							return(<div></div>);
+					}
+
+				const stats = Object.entries(curr[1]).map((curr, index) => {
+					const percentile = curr[1].percentile ?
+						curr[1].percentile : "N/A";
+					return(
+						<div className={curr[0] + ' subcategory'}>
+							<div>{curr[1].value}</div>
+							<div className="percentile">{percentile}</div>
+						</div>
+					);
+					
+				});
+
+				return (
+					<div className={key + ' category'}>{stats}</div>
+					);
+			});
+
 			return(
 				<div className="userInfo" id={user}>
 					<div key={user} className="userID">{user}</div>
 					<div className="userPlatform">{platform}</div> 
-					{lifetime}
+					<div className="total-lifetime-stats category">{lifetime}</div>
+					{stats_per_mode}
 				</div>
 			);
 		});  
