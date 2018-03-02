@@ -59,7 +59,7 @@ class Form extends React.Component{
 		const formNumber = this.state.forms;
 		const users = this.state.users;
 		const platforms = this.state.platforms;
-		
+
 		users.pop();
 		platforms.pop();
 		formNumber.pop();
@@ -172,16 +172,40 @@ class Site extends React.Component{
 	render(){
 
 		const data = this.state.data;
+		console.log(data);
 		//parses the data to get necessary info
 		const parseUserData = data.map((curr, index) => {
-
-			const user = (!curr.error) ? 
-				curr.epicUserHandle : 
-				"Player named " + curr.error + " not found. Please Try Again."
-				
+			if(curr.error){
 				return(
-					<div key={user} className="userID" id={user}>{user}</div>
+					<div key={curr.error} className="userID" id={curr.error}>{"Player named " + curr.error + " not found. Please Try Again."}</div>
 				);
+			}
+
+			
+			const user = curr.epicUserHandle;
+			const platform = curr.platformNameLong;
+			const lifetimeStats = curr.lifeTimeStats;
+			const recentMatches = curr.recentMatches;
+			const stats = curr.stats;
+
+			const lifetime = lifetimeStats.map((curr,index) =>{
+				const key = curr.key;
+				const value = curr.value;
+
+				return(
+					<div className="lifeTimeStats">
+						<div className={key}>{key}</div>
+						<div>{value}</div>
+					</div>
+				);
+			});
+			return(
+				<div className="userInfo" id={user}>
+					<div key={user} className="userID">{user}</div>
+					<div className="userPlatform">{platform}</div> 
+					{lifetime}
+				</div>
+			);
 		});  
 
 		return(
