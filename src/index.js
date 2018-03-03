@@ -7,9 +7,10 @@ class Form extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			users: ['', ''],
-			platforms: ['pc', 'pc'],
-			forms: [true, true]
+			users: [''],
+			platforms: ['pc'],
+			forms: [true],
+			titleData: false
 		};
 
 		this.handleUserChange = this.handleUserChange.bind(this);
@@ -172,6 +173,19 @@ class Site extends React.Component{
 	render(){
 
 		const data = this.state.data;
+
+		//get the title of each category
+		let titleData;
+		if(data.length > 0){
+			titleData = Object.entries(data[0].stats.p2).map((curr,index) =>{
+				return(
+					<div key={curr[0]} className="subcategory-title" id={curr[0]}>
+						{curr[1].label}
+					</div>
+				);
+			});
+		}
+
 		//parses the data to get necessary info
 		const parseUserData = data.map((curr, index) => {
 			if(curr.error){
@@ -179,8 +193,6 @@ class Site extends React.Component{
 					<div key={curr.error} className="userID" id={curr.error}>{"Player named " + curr.error + " not found. Please Try Again."}</div>
 				);
 			}
-
-			console.log(curr);
 			
 			const user = curr.epicUserHandle;
 			const platform = curr.platformNameLong;
@@ -201,30 +213,37 @@ class Site extends React.Component{
 			//parses both season data and lifetime data
 			const stats_per_mode = Object.entries(stats).map((curr,index) =>{
 				let key;
+				let section
 				switch(curr[0]){
 
 						case "p2":
 							key = "lifetime-solos";
+							section = "Solos (Total)"
 							break;
 
 						case "p10":
 							key = "lifetime-duos";
+							section = "Duos (Total)"
 							break;
 
 						case "p9":
 							key = "lifetime-squads";
+							section = "Squads (Total)"
 							break;
 
 						case "curr_p2":
-							key = "current-season-solos";
+							key = "season-solos";
+							section = "Solos (Current Season)"
 							break;
 
 						case "curr_p10":
-							key = "current-season-duos";
+							key = "season-duos";
+							section = "Duos (Current Season)"
 							break;
 
 						case "curr_p9":
-							key = "current-season-squads";
+							key = "season-squads";
+							section = "Squads (Current Season)"
 							break;
 
 						default:
@@ -243,20 +262,47 @@ class Site extends React.Component{
 					
 				});
 
+
+				//if a win ratio is not present it means that the player hasn't won a game in that category, thus the field is omitted. 
+				//So we create one to keep the table looking uniform
+				if(!curr[1].winRatio){
+					const empty_winRatio = 
+						(<div className="winRatio subcategory">
+							<div>0</div>
+							<div className="percentile">N/A</div>
+						</div>
+						);
+					stats.push(empty_winRatio);
+				}
+
 				return (
-					<div className={key + ' category'}>{stats}</div>
+					<div className={key + ' category'}>
+						<div className="category-title subcategory">{section}</div>
+						{stats}
+					</div>
 					);
 			});
+
 
 			return(
 				<div className="userInfo" id={user}>
 					<div key={user} className="userID">{user}</div>
 					<div className="userPlatform">{platform}</div> 
-					<div className="total-lifetime-stats category">{lifetime}</div>
-					{stats_per_mode}
+					<div className="total-lifetime-stats category">
+						<div id="lifetime-title">Overall Statistics</div>
+						{lifetime}
+					</div>
+					<div id="game-mode">
+						<div id="game-mode-title">Game Mode Statistics</div>
+						<div id="userName" className="subcategory-title">User Name</div>
+						<div id="category" className="subcategory-title">Category</div>
+						{titleData}
+						{stats_per_mode}
+					</div>
 				</div>
 			);
 		});  
+
 
 		return(
 			<div>
