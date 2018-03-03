@@ -4,121 +4,314 @@ body {
   font-family: sans-serif;
 }
 
-.userId, .userPlatform{
-	grid-column: 1 / 2;
+.category{
+	display: grid;
+	grid-column: 2 / 3;
 }
+
 .userInfo{
 	display: grid;
-}
-.total-lifetime-stats{
-	grid-row: 2 / 3;
-}
-.lifetime-solos{
-	grid-row: 3 / 4;
-}
-.lifetime-duos{
-	grid-row: 4 / 5;
-}
-.lifetime-squads{
-	grid-row: 5 / 6;
+	grid-template-columns: 150px;
+	margin: 1vh 0;
+	overflow-x: scroll;
 }
 
-.current-season-solos{
-	grid-row: 6 / 7;
-}
-.current-season-duos{
-	grid-row: 7 / 8;
-}
-.current-season-squads{
-	grid-row: 8 / 9;
+.userID, .userPlatform{
+	grid-column: 1 / 2;
+	width: 150px;
 }
 
-.category{
-	width: auto;
-	display: grid;
-	grid-template-rows: auto;
-	grid-template-columns: auto;
-	grid-column: 2 / 3;
-	justify-content: space-around;
-
-}
-.subcategory{
-	width: auto;
-	display: flex;
-	flex-direction: column;
+.usderID{
 	grid-row: 1 / 2;
 }
 
-.top1{
-	grid-column: 1 / 2;
+.userPlatform{
+	grid-row: 2 / 3;
 }
 
-.top3{
+.total-lifetime-stats{
+	grid-row: 1 / 3;
+
+}
+
+.lifetime-title{
+	grid-row: 1 / 2;
+	grid-column: 1 / 16;
+
+	background-color: #89bdd3;
+	width: 100%;
+	text-align: center;
+
+	padding: 1vh 0;
+}
+
+.total-lifetime-stats .subcategory{
+	grid-row: 3 / 4;
+	width: 90px;
+	padding: 1vh 0;
+}
+
+.total-lifetime-stats .subcategory-title{
+	grid-row: 2 / 3;
+	width: 90px;
+	background-color: #e3e3e3;
+	width: 100%;
+	padding: 1vh 0;
+}
+
+.game-mode{
+	display: grid;
 	grid-column: 2 / 3;
 }
 
-.top5{
+.game-mode .overall{
+	grid-row: 1 / 2;
+	grid-column: 1 / 21;
+	background-color: #89bdd3;
+	width: 100%;
+	text-align: center;
+	padding: 1vh 0;
+}
+
+
+.game-mode .subcategory-titles-overall{
+	grid-row: 2 / 3;
+	grid-column: 1 / 2;
+
+	display: grid;
+
+	grid-template-columns: 90px;
+	height: 100%;
+}
+
+.game-mode .subcategory-titles-overall .subcategory-title{
+	grid-row: 1 / 2;
+	width: 90px;
+	padding-left: 1vw;
+	background-color: #9ad3de;
+
+	display: flex;
+	align-items: center
+
+}
+
+.game-mode .subcategory-titles-overall .mode{
+	width: 90px;
+	padding-left: 1vw;
+}
+
+
+.game-mode .category{
+	grid-column: 1 / 2;
+
+	display: grid;
+	grid-template-columns: 90px;
+}
+
+.game-mode .category .subcategory{
+	grid-row: 1 / 2;
+}
+
+.game-mode .category .category-title{
+	grid-column: 1 / 2;
+	width: 90px;
+	padding: 1vh 0;
+
+}
+
+
+.game-mode .lifetime-solos{
+	grid-row: 3 / 4;
+	background-color: #c9c9c9;
+}
+
+.game-mode .lifetime-duos{
+	grid-row: 4 / 5;
+	background-color: #c9c9c9;
+}
+
+.game-mode .lifetime-squads{
+	grid-row: 5 / 6;
+	background-color: #c9c9c9;
+}
+
+
+.game-mode .current{
+	grid-row: 6 / 7;
+	grid-column: 1 / 21;
+	background-color: #89bdd3;
+	width: 100%;
+	text-align: center;
+	
+	padding: 1vh 0;
+}
+
+.game-mode .subcategory-titles-season{
+	grid-row: 7 / 8;
+	justify-self: start;
+	display: grid;
+	grid-template-columns: 90px;
+	background-color: #9ad3de;
+
+}
+
+.game-mode .subcategory-titles-season .subcategory-title{
+	grid-row: 1 / 2;
+	width: 90px;
+	padding-left: 1vw;
+
+	display: flex;
+	align-items: center
+
+
+}
+
+.game-mode .subcategory-titles-season .mode{
+	width: 90px;
+	padding-left: 1vw;
+}
+
+.game-mode .category .subcategory{
+	width: 90px;
+	padding-left: 1vw;
+
+	display: flex;
+	align-items: center;
+}
+
+.game-mode .season-solos{
+	grid-row: 8 / 9;
+	background-color: #c9c9c9;
+}
+
+.game-mode .season-duos{
+	grid-row: 9 / 10;
+	background-color: #c9c9c9;
+}
+
+.game-mode .season-squads{
+	grid-row: 10 / 11;
+	background-color: #c9c9c9;
+
+}
+
+
+.game-mode .subcategory-titles-overall .top1, .game-mode .subcategory-titles-season .top1, .game-mode .category .top1{
+	grid-column: 2 / 3;
+	background-color: #9ad3de;
+}
+
+.game-mode .subcategory-titles-overall .top3, .game-mode .subcategory-titles-season .top3, .game-mode .category .top3{
 	grid-column: 3 / 4;
+	background-color: #c9c9c9;
 }
 
 
-.top6{
+.game-mode .subcategory-titles-overall .top5, .game-mode .subcategory-titles-season .top5, .game-mode .category .top5{
 	grid-column: 4 / 5;
+	background-color: #9ad3de;
 }
 
 
-.top10{
+.game-mode .subcategory-titles-overall .top6, .game-mode .subcategory-titles-season .top6, .game-mode .category .top6{
 	grid-column: 5 / 6;
+	background-color: #c9c9c9;
+
 }
 
 
-.top12{
+.game-mode .subcategory-titles-overall .top10, .game-mode .subcategory-titles-season .top10, .game-mode .category .top10{
 	grid-column: 6 / 7;
+	background-color: #9ad3de;
 }
 
-.top25{
+
+.game-mode .subcategory-titles-overall .top12, .game-mode .subcategory-titles-season .top12, .game-mode .category .top12{
 	grid-column: 7 / 8;
+	background-color: #c9c9c9;
 }
 
-.matches{
+
+.game-mode .subcategory-titles-overall .top25, .game-mode .subcategory-titles-season .top25, .game-mode .category .top25{
 	grid-column: 8 / 9;
+	background-color: #9ad3de;
 }
-.minutesPlayed{
+
+
+.game-mode .subcategory-titles-overall .matches, .game-mode .subcategory-titles-season .matches, .game-mode .category .matches{
 	grid-column: 9 / 10;
+	background-color: #c9c9c9;
 }
 
-.avgTimePlayed{
+
+.game-mode .subcategory-titles-overall .winRatio, .game-mode .subcategory-titles-season .winRatio, .game-mode .category .winRatio{
 	grid-column: 10 / 11;
+	background-color: #9ad3de;
 }
 
-.kills{
+
+.game-mode .subcategory-titles-overall .minutesPlayed, .game-mode .subcategory-titles-season .minutesPlayed, .game-mode .category .minutesPlayed{
 	grid-column: 11 / 12;
+	background-color: #c9c9c9;
 }
 
-.kpm{
+
+.game-mode .subcategory-titles-overall .kpm, .game-mode .subcategory-titles-season .kpm, .game-mode .category .kpm{
 	grid-column: 12 / 13;
+	background-color: #9ad3de;
 }
 
-.kpg{
+
+.game-mode .subcategory-titles-overall .kpg, .game-mode .subcategory-titles-season .kpg, .game-mode .category .kpg{
 	grid-column: 13 / 14;
+	background-color: #c9c9c9;
 }
 
-.winRatio{
+.game-mode .subcategory-titles-overall .kills, .game-mode .subcategory-titles-season .kills, .game-mode .category .kills{
 	grid-column: 14 / 15;
+	background-color: #9ad3de;
 }
 
-.kd{
+.game-mode .subcategory-titles-overall .avgTimePlayed, .game-mode .subcategory-titles-season .avgTimePlayed, .game-mode .category .avgTimePlayed{
 	grid-column: 15 / 16;
+	background-color: #c9c9c9;
 }
 
-.scorePerMatch{
+
+.game-mode .subcategory-titles-overall .scorePerMatch, .game-mode .subcategory-titles-season .scorePerMatch, .game-mode .category .scorePerMatch{
 	grid-column: 16 / 17;
+	background-color: #9ad3de;
 }
 
-.scorPerMin{
+
+.game-mode .subcategory-titles-overall .scorePerMin, .game-mode .subcategory-titles-season .scorePerMin, .game-mode .category .scorePerMin{
 	grid-column: 17 / 18;
+	background-color: #c9c9c9;
+}
+
+
+.game-mode .subcategory-titles-overall .score, .game-mode .subcategory-titles-season .score, .game-mode .category .score{
+	grid-column: 18 / 19;
+	background-color: #9ad3de;
 }
 
 
 
+.game-mode .subcategory-titles-overall .kd, .game-mode .subcategory-titles-season .kd, .game-mode .category .kd{
+	grid-column: 19 / 20;
+	background-color: #c9c9c9;
+}
 
+
+.game-mode .subcategory-titles-overall .trnRating, .game-mode .subcategory-titles-season .trnRating, .game-mode .category .trnRating{
+	grid-column: 20 / 21;
+	background-color: #9ad3de;
+}
+
+.percentile{
+	display: none;
+}
+
+.game-mode .subcategory-titles-overall .subcategory-title, .game-mode .subcategory-titles-season .subcategory-title{
+	background-color: #e3e3e3;
+}
