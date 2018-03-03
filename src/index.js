@@ -174,18 +174,40 @@ class Site extends React.Component{
 
 		const data = this.state.data;
 
-		//get the title of each category
-		let titleData;
+		//get the title for subcategories of each mode and lifetime stats
+		let titleData_mode_overall;
+		let titleData_mode_season;
+		let titleData_lifetime;
 		if(data.length > 0){
-			titleData = Object.entries(data[0].stats.p2).map((curr,index) =>{
+			titleData_mode_overall = Object.entries(data[0].stats.p2).map((curr,index) =>{
 				return(
-					<div key={curr[0]} className="subcategory-title" id={curr[0]}>
+					<div key={curr[0]} className={curr[0] + " subcategory-title"}>
 						{curr[1].label}
 					</div>
 				);
 			});
-		}
 
+			titleData_mode_overall.unshift(<div className="mode subcategory-title">Mode</div>);
+
+			titleData_mode_season= Object.entries(data[0].stats.p2).map((curr,index) =>{
+				return(
+					<div key={curr[0]} className={curr[0] + " subcategory-title"}>
+						{curr[1].label}
+					</div>
+				);
+			});
+
+			titleData_mode_season.unshift(<div className="mode subcategory-title">Mode</div>);
+
+			titleData_lifetime = data[0].lifeTimeStats.map((curr,index) =>{
+				return(
+					<div key={curr.key} className={curr.key + " subcategory-title"}>
+						{curr.key}
+					</div>
+				);
+			});
+		}
+		console.log(data);
 		//parses the data to get necessary info
 		const parseUserData = data.map((curr, index) => {
 			if(curr.error){
@@ -218,41 +240,42 @@ class Site extends React.Component{
 
 						case "p2":
 							key = "lifetime-solos";
-							section = "Solos (Total)"
+							section = "Solos"
 							break;
 
 						case "p10":
 							key = "lifetime-duos";
-							section = "Duos (Total)"
+							section = "Duos"
 							break;
 
 						case "p9":
 							key = "lifetime-squads";
-							section = "Squads (Total)"
+							section = "Squads"
 							break;
 
 						case "curr_p2":
 							key = "season-solos";
-							section = "Solos (Current Season)"
+							section = "Solos"
 							break;
 
 						case "curr_p10":
 							key = "season-duos";
-							section = "Duos (Current Season)"
+							section = "Duos"
 							break;
 
 						case "curr_p9":
 							key = "season-squads";
-							section = "Squads (Current Season)"
+							section = "Squads"
 							break;
 
 						default:
 							return(<div></div>);
 					}
-
+				//if percentile isn't present, set to 0
 				const stats = Object.entries(curr[1]).map((curr, index) => {
 					const percentile = curr[1].percentile ?
 						curr[1].percentile : "N/A";
+
 					return(
 						<div className={curr[0] + ' subcategory'}>
 							<div>{curr[1].value}</div>
@@ -286,17 +309,20 @@ class Site extends React.Component{
 
 			return(
 				<div className="userInfo" id={user}>
-					<div key={user} className="userID">{user}</div>
-					<div className="userPlatform">{platform}</div> 
+					<div key={user}>
+						<div className="userID">{user} </div>
+						<div className="userPlatform">{platform}</div> 
+					</div>
 					<div className="total-lifetime-stats category">
-						<div id="lifetime-title">Overall Statistics</div>
+						<div className="lifetime-title">Overall Statistics</div>
+						{titleData_lifetime}
 						{lifetime}
 					</div>
-					<div id="game-mode">
-						<div id="game-mode-title">Game Mode Statistics</div>
-						<div id="userName" className="subcategory-title">User Name</div>
-						<div id="category" className="subcategory-title">Category</div>
-						{titleData}
+					<div className="game-mode">
+						<div className="game-mode-title overall">Game Mode Statistics (Overall)</div>
+						<div className="subcategory-titles-overall">{titleData_mode_overall}</div>
+						<div className="game-mode-title current">Game Mode Statistics (Current Season)</div>
+						<div className="subcategory-titles-season">{titleData_mode_season}</div>
 						{stats_per_mode}
 					</div>
 				</div>
