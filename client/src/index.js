@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 //import $ from "jquery";
-
+//https://medium.freecodecamp.org/how-to-make-create-react-app-work-with-a-node-backend-api-7c5c48acb1b0
 class Form extends React.Component{
 	constructor(props){
 		super(props);
@@ -145,8 +145,6 @@ class Form extends React.Component{
 
 		});
 
-		console.log(users.length);
-
 		const remove_button = (users.length > 1) ?
 			<button onClick={this.removeForm}>Remove Player</button> :
 			<button onClick={this.removeForm} disabled>Remove Player</button>
@@ -166,9 +164,6 @@ class Form extends React.Component{
 }
 
 function UserID(props){
-
-	const user = props.user;
-	const platform = props.platform;
 
 	return(
 		<div className="userID" key={props.user} id={props.user}>
