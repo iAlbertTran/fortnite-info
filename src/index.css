@@ -14,31 +14,57 @@ body {
 	grid-template-columns: 150px;
 	margin: 1vh 0;
 	font-size: 16px;
+	margin: 1vw;
 }
 
-.userID, .userPlatform{
-	grid-column: 1 / 2;
-	width: 150px;
-	background-color: #89bdd3;
+#playerForm{
+	margin: 1vw;
+	display: grid;
+
+	justify-content: center;
+}
+
+#playerForm label{
+	grid-row: 1 / 2;
+	grid-column: 1 / 4;
+
+	max-height: 100px;
+	overflow-y: scroll;
+}
+
+#playerForm input, #playerForm button{
+	margin: 2px;
+}
+
+#playerForm .userForm{
+	margin: 1vh 0;
+
+	grid-column: 1 / 4;
+}
+
+#playerForm .userForm input, #playerForm .userForm select{
+	margin: 0 5px;
 }
 
 .userID{
-	grid-row: 1 / 4;
-	height: 100%;
+	grid-row: 1 / 2;
+	height: auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
-}
 
-.userPlatform{
-	grid-row: 2 / 3;
+	width: 150px;
+	background-color: #89bdd3;
+	padding: 5px;
+	border-bottom: white 1px solid;
 }
 
 .total-lifetime-stats{
-	grid-row: 1 / 3;
-
+	grid-row: 2 / 3;
+	grid-column: 1 / 16;
+	overflow-x: scroll;
 }
 
 .lifetime-title{
@@ -63,6 +89,7 @@ body {
 	grid-row: 2 / 3;
 	background-color: #e3e3e3;
 	width: auto;
+	min-width: 100px;
 	padding: 1vh 0;
 	border: white 1px solid;
 	text-align: center;
@@ -75,7 +102,8 @@ body {
 
 .game-mode{
 	display: grid;
-	grid-column: 2 / 3;
+	grid-row: 3 / 4;
+	grid-column: 1 / 16;
 	overflow-x: scroll;
 }
 
@@ -112,7 +140,7 @@ body {
 }
 
 .game-mode .subcategory-titles-overall .mode{
-	width: 90px;
+	width: auto;
 	padding-left: 1vw;
 	border-left: #e3e3e3 1px solid;
 }
@@ -131,10 +159,11 @@ body {
 
 .game-mode .category .category-title{
 	grid-column: 1 / 2;
-	width: 90px;
+	width: auto;
 	padding: 1vh 0;
 	border: white 1px solid;
-
+	border-left: #c9c9c9 1px solid;
+	padding-left: 1vw;
 }
 
 
@@ -187,7 +216,7 @@ body {
 }
 
 .game-mode .subcategory-titles-season .mode{
-	width: 90px;
+	width: auto;
 	padding-left: 1vw;
 	border-left: #e3e3e3 1px solid;
 }
@@ -204,7 +233,6 @@ body {
 .game-mode .season-solos{
 	grid-row: 8 / 9;
 	background-color: #c9c9c9;
-	border-left: #c9c9c9 1px solid;
 }
 
 .game-mode .season-duos{
