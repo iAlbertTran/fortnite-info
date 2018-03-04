@@ -61,15 +61,18 @@ class Form extends React.Component{
 		const users = this.state.users;
 		const platforms = this.state.platforms;
 
-		users.pop();
-		platforms.pop();
-		formNumber.pop();
+		if(users.length > 1){
+			users.pop();
+			platforms.pop();
+			formNumber.pop();
 
-		this.setState({
-			users: users,
-			platforms: platforms,
-			forms: formNumber
-		});
+			this.setState({
+				users: users,
+				platforms: platforms,
+				forms: formNumber
+			});
+		}
+
 
 	}
 
@@ -125,6 +128,7 @@ class Form extends React.Component{
 
 	render(){
 		let formNumber = this.state.forms;
+		const users = this.state.users;
 		const forms = formNumber.map((curr, index) => {
 			return(
 				<div key={index} className="userForm">
@@ -141,6 +145,12 @@ class Form extends React.Component{
 
 		});
 
+		console.log(users.length);
+
+		const remove_button = (users.length > 1) ?
+			<button onClick={this.removeForm}>Remove Player</button> :
+			<button onClick={this.removeForm} disabled>Remove Player</button>
+
 		return(
 			<form id="playerForm" onSubmit={this.requestData}>
 				<label>
@@ -148,7 +158,7 @@ class Form extends React.Component{
 				</label>
 				<input type='submit' value='Get Info' />
 				<button onClick={this.addForm}>Add Player</button>
-				<button onClick={this.removeForm}>Remove Player</button>
+				{remove_button}
 			</form>
 		);
 	}
@@ -175,8 +185,8 @@ function OverallStats(props){
 	let titleData_lifetime;
 
 	//get the title for subcategories of each mode and lifetime stats
-	if(data.length > 0 && !data[0].error){
-		titleData_lifetime = data[0].lifeTimeStats.map((curr,index) =>{
+	if(!data.error){
+		titleData_lifetime = data.lifeTimeStats.map((curr,index) =>{
 			return(
 				<div key={curr.key} className={curr.key + " subcategory-title"}>
 					{curr.key}
@@ -217,8 +227,8 @@ function GameMode(props){
 	let stats_per_mode;
 
 	//get the title for subcategories of each mode and lifetime stats
-	if(data.length > 0 && !data[0].error){
-		titleData_mode_overall = Object.entries(data[0].stats.p2).map((curr,index) =>{
+	if(!data.error){
+		titleData_mode_overall = Object.entries(data.stats.p2).map((curr,index) =>{
 			return(
 				<div key={curr[0]} className={curr[0] + " subcategory-title"}>
 					{curr[1].label}
@@ -228,7 +238,7 @@ function GameMode(props){
 
 		titleData_mode_overall.unshift(<div className="mode subcategory-title">Mode</div>);
 
-		titleData_mode_season= Object.entries(data[0].stats.p2).map((curr,index) =>{
+		titleData_mode_season= Object.entries(data.stats.p2).map((curr,index) =>{
 			return(
 				<div key={curr[0]} className={curr[0] + " subcategory-title"}>
 					{curr[1].label}
@@ -308,7 +318,7 @@ function GameMode(props){
 
 		return (
 			<div className={key + ' category'}>
-				<div className="category-title subcategory">{section}</div>
+				<div className="category-title">{section}</div>
 				{stats}
 			</div>
 			);
