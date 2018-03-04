@@ -2,6 +2,10 @@ const express = require('express');
 const request = require('request');
 
 const app = express();
+const port = process.env.PORT || 5000;
 
-app.get('/', (req, res) => res.send('Hello World!'));
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.get('/api/hello', (req, res) => {
+  res.send({ express: 'Hello From Express' });
+});
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
