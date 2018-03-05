@@ -79,51 +79,23 @@ class Form extends React.Component{
 	//requests data from api
 	requestData(event){
 		//prevents page reload
-		event.preventDefault();
-
+		event.preventDefault();		
 		let users = this.state.users;
 		let platforms = this.state.platforms;
-		let user;
-		let platform;
-		let data = [];
 
-		let wait = 0;
-		//proxyurl needed to bypass cors
-		const proxyurl = "https://cors-anywhere.herokuapp.com/";
+		let url = "http://127.0.0.1:5000/query?op=userInfo";
 
-		//for each user submitted
 		for(let i = 0; i < users.length; ++i){
-			user = users[i];
-			platform = platforms[i];
-			const url = 'https://api.fortnitetracker.com/v1/profile/' + platform.toLowerCase() + "/" + user;
-			const req = new XMLHttpRequest();
-			req.onreadystatechange = function(){
-				let newData;
-				if(req.readyState === XMLHttpRequest.DONE){
-					newData = JSON.parse(req.responseText);
-
-					if(newData.error){
-						newData.error = users[i];
-					}
-
-					data.push(newData);
-					this.props.handleNewInfo(data);
-				}
-			}.bind(this)
-
-			req.open('GET', proxyurl + url, true);
-
-			//api key send with request through header
-			req.setRequestHeader('TRN-api-key', '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7');
-
-			//api limits 1 request per 2 seconds
-			setTimeout(function(){
-				req.send();
-			}, wait);
-
-			wait += 2000;
+			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
 		}
 
+		console.log(url);
+
+		let opReq = new XMLHttpRequest();
+		//opReq.addEventListener("load", reqListener);
+		opReq.open("GET", url, true);
+
+		opReq.send();
 	}
 
 	render(){
@@ -368,6 +340,7 @@ class Site extends React.Component{
 		this.setState({
 			data: newData
 		});
+		console.log(newData);
 	}
 
 	render(){
@@ -382,5 +355,4 @@ class Site extends React.Component{
 }
 
 ReactDOM.render(<Site />, document.getElementById('root'));
-
 
