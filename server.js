@@ -9,8 +9,12 @@ let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const fortniteDB = new sqlite3.Database(dbFile);
 
 const app = express();
+
+//localhost:5000 listens to queries
+//localhost:3000 is my actual react app
 const port = process.env.PORT || 5000;
 
+//listens to all queries
 app.get('/query', function(request, response){
 	console.log("query");
 	query = request.url.split("?")[1];
@@ -31,6 +35,9 @@ function sendCode(code, response, message){
 	response.send(message);
 }
 
+
+
+//answers valid queries
 function answer(query, response){
 	let answer = response;
 	let queryObj = querystring.parse(query);
@@ -38,6 +45,8 @@ function answer(query, response){
 	console.log(operation);
 	console.log(query);
 
+
+	//gets user info from TRN API and inserts / updates database with the information
 	if(operation === "userInfo"){
 		console.log('uploading user statistics to database...');
 
