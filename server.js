@@ -91,7 +91,20 @@ function answer(query, response){
 			--remainingCalls;
 			//send data after all api calls are done
 			if(remainingCalls === 0){
-				response.send(data);	
+				for(let i = 0; i < data.length; ++i){
+					let accountName = data[0].epicUserHandle;
+					let platformName = data[0].platformName;
+					let overall_stats = data[i].lifeTimeStats;
+					let mode_stats = data[i].stats;
+
+					let mode_stats_overall_solos = mode_stats.p2;
+					let mode_stats_overall_duos = mode_stats.p10;
+					let mode_stats_overall_squads = mode_stats.p9;
+
+					let mode_stats_season_solos = mode_stats.curr_p2;
+					let mode_stats_season_duos = mode_stats.curr_p10;
+					let mode_stats_season_squads =  mode_stats.curr_p9;
+				}	
 			}
 		}
 	}	
