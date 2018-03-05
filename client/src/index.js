@@ -15,8 +15,8 @@ class Form extends React.Component{
 
 		this.handleUserChange = this.handleUserChange.bind(this);
 		this.handlePlatformChange = this.handlePlatformChange.bind(this);
-		this.requestData = this.requestData.bind(this);
 		this.addForm = this.addForm.bind(this);
+		this.callApi = this.callApi.bind(this);
 		this.removeForm = this.removeForm.bind(this);
 	}
 
@@ -76,55 +76,21 @@ class Form extends React.Component{
 
 	}
 
-	//requests data from api
-	requestData(event){
-		//prevents page reload
-		event.preventDefault();
-
-		let users = this.state.users;
+	callApi = async (event) => {
+  		event.preventDefault();
+  		let users = this.state.users;
 		let platforms = this.state.platforms;
-		let user;
-		let platform;
-		let data = [];
 
-		let wait = 0;
-		//proxyurl needed to bypass cors
-		const proxyurl = "https://cors-anywhere.herokuapp.com/";
+		let url = "/query?op=userInfo";
 
-		//for each user submitted
 		for(let i = 0; i < users.length; ++i){
-			user = users[i];
-			platform = platforms[i];
-			const url = 'https://api.fortnitetracker.com/v1/profile/' + platform.toLowerCase() + "/" + user;
-			const req = new XMLHttpRequest();
-			req.onreadystatechange = function(){
-				let newData;
-				if(req.readyState === XMLHttpRequest.DONE){
-					newData = JSON.parse(req.responseText);
-
-					if(newData.error){
-						newData.error = users[i];
-					}
-
-					data.push(newData);
-					this.props.handleNewInfo(data);
-				}
-			}.bind(this)
-
-			req.open('GET', proxyurl + url, true);
-
-			//api key send with request through header
-			req.setRequestHeader('TRN-api-key', '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7');
-
-			//api limits 1 request per 2 seconds
-			setTimeout(function(){
-				req.send();
-			}, wait);
-
-			wait += 2000;
+			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
 		}
+		const response = await fetch(url);
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+  	};
 
-	}
 
 	render(){
 		let formNumber = this.state.forms;
@@ -150,7 +116,7 @@ class Form extends React.Component{
 			<button onClick={this.removeForm} disabled>Remove Player</button>
 
 		return(
-			<form id="playerForm" onSubmit={this.requestData}>
+			<form id="playerForm" onSubmit={this.callApi}>
 				<label>
 					{forms}
 				</label>
@@ -359,9 +325,20 @@ class Site extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			data: []
+			data: [],
+			response: ''
 		}
 	}
+
+  	/*componentDidMount() {
+    	this.callApi()
+      	.then(res => this.setState({ response: res.express }))
+      	.catch(err => console.log(err));
+ 	}*/
+
+
+
+	 //requests data from api
 
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
@@ -374,7 +351,10 @@ class Site extends React.Component{
 
 		return(
 			<div>
-				<Form data={this.state.data} handleNewInfo={(newData) => this.handleNewInfo(newData)}/>
+				<Form 
+					data={this.state.data} 
+					handleNewInfo={(newData) => this.handleNewInfo(newData)}
+				/>
 				<UserInfo data={this.state.data}/>
 			</div>
 		);
@@ -382,5 +362,4 @@ class Site extends React.Component{
 }
 
 ReactDOM.render(<Site />, document.getElementById('root'));
-
 
