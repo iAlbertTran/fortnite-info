@@ -15,8 +15,8 @@ class Form extends React.Component{
 
 		this.handleUserChange = this.handleUserChange.bind(this);
 		this.handlePlatformChange = this.handlePlatformChange.bind(this);
-		this.requestData = this.requestData.bind(this);
 		this.addForm = this.addForm.bind(this);
+		this.callApi = this.callApi.bind(this);
 		this.removeForm = this.removeForm.bind(this);
 	}
 
@@ -76,27 +76,21 @@ class Form extends React.Component{
 
 	}
 
-	//requests data from api
-	requestData(event){
-		//prevents page reload
-		event.preventDefault();		
-		let users = this.state.users;
+	callApi = async (event) => {
+  		event.preventDefault();
+  		let users = this.state.users;
 		let platforms = this.state.platforms;
 
-		let url = "http://127.0.0.1:5000/query?op=userInfo";
+		let url = "/query?op=userInfo";
 
 		for(let i = 0; i < users.length; ++i){
 			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
 		}
+		const response = await fetch(url);
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+  	};
 
-		console.log(url);
-
-		let opReq = new XMLHttpRequest();
-		//opReq.addEventListener("load", reqListener);
-		opReq.open("GET", url, true);
-
-		opReq.send();
-	}
 
 	render(){
 		let formNumber = this.state.forms;
@@ -122,7 +116,7 @@ class Form extends React.Component{
 			<button onClick={this.removeForm} disabled>Remove Player</button>
 
 		return(
-			<form id="playerForm" onSubmit={this.requestData}>
+			<form id="playerForm" onSubmit={this.callApi}>
 				<label>
 					{forms}
 				</label>
@@ -331,23 +325,36 @@ class Site extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			data: []
+			data: [],
+			response: ''
 		}
 	}
+
+  	/*componentDidMount() {
+    	this.callApi()
+      	.then(res => this.setState({ response: res.express }))
+      	.catch(err => console.log(err));
+ 	}*/
+
+
+
+	 //requests data from api
 
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
 		this.setState({
 			data: newData
 		});
-		console.log(newData);
 	}
 
 	render(){
 
 		return(
 			<div>
-				<Form data={this.state.data} handleNewInfo={(newData) => this.handleNewInfo(newData)}/>
+				<Form 
+					data={this.state.data} 
+					handleNewInfo={(newData) => this.handleNewInfo(newData)}
+				/>
 				<UserInfo data={this.state.data}/>
 			</div>
 		);

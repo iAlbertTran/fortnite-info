@@ -19,7 +19,7 @@ app.get('/query', function(request, response){
 		answer(query, response);
 	}
 	else{
-		sendCode(400, response, 'query not recgnozied');
+		sendCode(400, response, 'query not recognized');
 	}
 });
 
@@ -32,6 +32,7 @@ function sendCode(code, response, message){
 }
 
 function answer(query, response){
+	let answer = response;
 	let queryObj = querystring.parse(query);
 	let operation = queryObj.op;
 	console.log(operation);
@@ -55,7 +56,7 @@ function answer(query, response){
 		}
 
 		let data = [];
-
+		let remainingCalls = users.length;
 		let wait = 0;
 		//proxyurl needed to bypass cors
 		const proxyurl = "https://cors-anywhere.herokuapp.com/";
@@ -65,34 +66,36 @@ function answer(query, response){
 			let user = users[i];
 			let platform = platforms[i];
 			const url = 'https://api.fortnitetracker.com/v1/profile/' + platform.toLowerCase() + "/" + user;
-			const req = new XMLHttpRequest;
-			req.onreadystatechange = function(){
-				let newData;
-				console.log(req.readyState);
-				if(req.readyState === 4){
-					newData = JSON.parse(req.responseText);
-					console.log('it goes here');
-					if(newData.error){
-						newData.error = users[i];
-					}
-
-					data.push(newData);
-					console.log(newData);
+			let options = {
+				url: url,
+				headers:{
+					'TRN-api-key' : '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7'
 				}
-			}
+			};
 
-			req.open('GET', proxyurl + url, true);
-
-			//api key send with request through header
-			req.setRequestHeader('TRN-api-key', '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7');
-
-			//api limits 1 request per 2 seconds
+			//fortnite api only allows 1 api request per 2 seconds
 			setTimeout(function(){
-				req.send();
+				request(options, function(error, response, body){
+					if(!error && response.statusCode === 200){
+						APIcallback(body);
+					}
+				});
 			}, wait);
-
 			wait += 2000;
 		}
 
-	}
+		//callback to resolve async problem with settimeout
+		function APIcallback(body){
+			let newData = JSON.parse(body);
+			data.push(newData);
+			--remainingCalls;
+			//send data after all api calls are done
+			if(remainingCalls === 0){
+				response.send(data);	
+			}
+		}
+	}	
+
+
+
 }
