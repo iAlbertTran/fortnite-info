@@ -9,8 +9,12 @@ let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const fortniteDB = new sqlite3.Database(dbFile);
 
 const app = express();
+
+//localhost:5000 listens to queries
+//localhost:3000 is my actual react app
 const port = process.env.PORT || 5000;
 
+//listens to all queries
 app.get('/query', function(request, response){
 	console.log("query");
 	query = request.url.split("?")[1];
@@ -27,10 +31,14 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 
 function sendCode(code, response, message){
 	console.log(1);
-	reponse.status(code);
+	response.status(code);
 	response.send(message);
 }
 
+
+
+let queryCount;
+//answers valid queries
 function answer(query, response){
 	let answer = response;
 	let queryObj = querystring.parse(query);
@@ -38,6 +46,8 @@ function answer(query, response){
 	console.log(operation);
 	console.log(query);
 
+
+	//gets user info from TRN API and inserts / updates database with the information
 	if(operation === "userInfo"){
 		console.log('uploading user statistics to database...');
 
@@ -91,24 +101,115 @@ function answer(query, response){
 			--remainingCalls;
 			//send data after all api calls are done
 			if(remainingCalls === 0){
+
+				//global variable. 7 updates to 7 tables per player. Shouldn't send a response until all updates are done;
+				queryCount = data.length * 7;
 				for(let i = 0; i < data.length; ++i){
-					let accountName = data[0].epicUserHandle;
-					let platformName = data[0].platformName;
+					let accountName = data[i].epicUserHandle;
+					let platformName = data[i].platformName;
+
 					let overall_stats = data[i].lifeTimeStats;
 					let mode_stats = data[i].stats;
 
-					let mode_stats_overall_solos = mode_stats.p2;
-					let mode_stats_overall_duos = mode_stats.p10;
-					let mode_stats_overall_squads = mode_stats.p9;
+					updateOverallStats(accountName, platformName, overall_stats, response);
+					updateModeStats(accountName, platformName, mode_stats, response);
 
-					let mode_stats_season_solos = mode_stats.curr_p2;
-					let mode_stats_season_duos = mode_stats.curr_p10;
-					let mode_stats_season_squads =  mode_stats.curr_p9;
-				}	
+				}
 			}
 		}
 	}	
 
 
 
+}
+
+function updateOverallStats(user, platform, data, response){
+	let lifeTime_keys = ['PLAYERNAME','PLATFORM'];
+	let lifeTime_values = ["'" + user + "'", "'" + platform + "'"];
+	for(let i = 0; i < data.length; ++i){
+		lifeTime_keys.push("'" + data[i].key + "'");
+		lifeTime_values.push("'" + data[i].value + "'");
+	}
+	
+	let cmdStr = "INSERT OR REPLACE INTO overall (" + lifeTime_keys + ") VALUES (" + lifeTime_values + ")";
+	fortniteDB.run(cmdStr, updateCallback);
+
+	function updateCallback(err){
+		console.log("updating information for " + user);
+		if(err){
+			console.log(err+"\n");
+			sendCode(400, response, "API error");
+		}
+		else{
+			console.log("update success!");
+			response.status(200);
+            response.type("text/plain");
+           	--queryCount;
+		}
+	}
+}
+
+function updateModeStats(user, platform, data, response){
+	const test = Object.entries(data).map((curr) =>{
+
+		let tableName;
+
+		switch(curr[0]){
+			case 'p2':
+				tableName = 'overall_solo';
+				break;
+			case 'p10':
+				tableName = 'overall_duo';
+				break;
+			case 'p9':
+				tableName = 'overall_squad';
+				break; 
+			case 'curr_p2':
+				tableName = 'season_solo';
+				break;
+			case 'curr_p10':
+				tableName = 'season_duo';
+				break;
+			case 'curr_p9':
+				tableName = 'season_squad';
+				break;
+			default: break; 
+		}
+
+		let columnNames = ["'PLAYERNAME'", "'PLATFORM'"];
+
+		let mode_values = Object.entries(curr[1]).map((curr) => {
+			columnNames.push("'" + curr[1].label + "'");
+			return ("'" + curr[1].displayValue + "'");
+		});
+
+		mode_values.unshift("'" + platform + "'");
+		mode_values.unshift("'" + user + "'");
+
+		let cmdStr = "INSERT OR REPLACE INTO " + tableName + " (" + columnNames + ") VALUES (" + mode_values + ")";
+
+		fortniteDB.run(cmdStr, function(err){
+			console.log("updating " + tableName + " for " + user);
+
+			if(err){
+				console.log(err+"\n");
+				sendCode(400, response, "API error");
+			}
+			else{
+
+				console.log("update success!");
+
+				response.status(200);
+	            response.type("text/plain");
+
+	            --queryCount;
+
+	            if(queryCount === 0){
+					response.send({message: "successfully updated database tables. Information is now available."});
+	            }
+			}
+
+		});
+
+	});	
 }
