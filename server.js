@@ -37,6 +37,7 @@ function sendCode(code, response, message){
 
 
 
+let queryCount;
 //answers valid queries
 function answer(query, response){
 	let answer = response;
@@ -100,15 +101,19 @@ function answer(query, response){
 			--remainingCalls;
 			//send data after all api calls are done
 			if(remainingCalls === 0){
+
+				//global variable. 7 updates to 7 tables per player. Shouldn't send a response until all updates are done;
+				queryCount = data.length * 7;
 				for(let i = 0; i < data.length; ++i){
 					let accountName = data[i].epicUserHandle;
 					let platformName = data[i].platformName;
 
 					let overall_stats = data[i].lifeTimeStats;
 					let mode_stats = data[i].stats;
-					
+
 					updateOverallStats(accountName, platformName, overall_stats, response);
 					updateModeStats(accountName, platformName, mode_stats, response);
+
 				}
 			}
 		}
@@ -139,6 +144,7 @@ function updateOverallStats(user, platform, data, response){
 			console.log("update success!");
 			response.status(200);
             response.type("text/plain");
+           	--queryCount;
 		}
 	}
 }
@@ -190,9 +196,17 @@ function updateModeStats(user, platform, data, response){
 				sendCode(400, response, "API error");
 			}
 			else{
+
 				console.log("update success!");
+
 				response.status(200);
 	            response.type("text/plain");
+
+	            --queryCount;
+
+	            if(queryCount === 0){
+					response.send({message: "successfully updated database tables. Information is now available."});
+	            }
 			}
 
 		});
