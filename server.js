@@ -101,11 +101,12 @@ function answer(query, response){
 			//send data after all api calls are done
 			if(remainingCalls === 0){
 				for(let i = 0; i < data.length; ++i){
-					let accountName = data[0].epicUserHandle;
-					let platformName = data[0].platformName;
+					let accountName = data[i].epicUserHandle;
+					let platformName = data[i].platformName;
 
 					let overall_stats = data[i].lifeTimeStats;
 					let mode_stats = data[i].stats;
+					
 					updateOverallStats(accountName, platformName, overall_stats, response);
 					updateModeStats(accountName, platformName, mode_stats, response);
 				}
@@ -196,6 +197,5 @@ function updateModeStats(user, platform, data, response){
 
 		});
 
-	});
-	
+	});	
 }
