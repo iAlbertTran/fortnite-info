@@ -48,7 +48,7 @@ function answer(query, response){
 
 
 	//gets user info from TRN API and inserts / updates database with the information
-	if(operation === "userInfo"){
+	if(operation === "update"){
 		console.log('uploading user statistics to database...');
 
 		//splits url to get usernames and their platform for each entry in array
@@ -117,14 +117,30 @@ function answer(query, response){
 				}
 			}
 		}
-	}	
+	}
+
+	else if(operation === "userInfo"){
+		console.log('Pulling data on users in database...')
+		fortniteDB.all("SELECT * FROM overall", function(err,rows){
+			if(err){
+			console.log(err+"\n");
+			sendCode(400, response, "API error");
+		}
+		else{
+			console.log("query success!");
+			response.status(200);
+            response.type("text/plain");
+            response.send(rows);
+		}
+		});
+	}
 
 
 
 }
 
 function updateOverallStats(user, platform, data, response){
-	let lifeTime_keys = ['PLAYERNAME','PLATFORM'];
+	let lifeTime_keys = ['User','Platform'];
 	let lifeTime_values = ["'" + user + "'", "'" + platform + "'"];
 	for(let i = 0; i < data.length; ++i){
 		lifeTime_keys.push("'" + data[i].key + "'");
@@ -176,7 +192,7 @@ function updateModeStats(user, platform, data, response){
 			default: break; 
 		}
 
-		let columnNames = ["'PLAYERNAME'", "'PLATFORM'"];
+		let columnNames = ["'User'", "'Platform'"];
 
 		let mode_values = Object.entries(curr[1]).map((curr) => {
 			columnNames.push("'" + curr[1].label + "'");
@@ -205,7 +221,16 @@ function updateModeStats(user, platform, data, response){
 	            --queryCount;
 
 	            if(queryCount === 0){
-					response.send({message: "successfully updated database tables. Information is now available."});
+	            	fortniteDB.all("SELECT * FROM overall", function(err, row){
+	            		if(err){
+	            			console.log(err+"\n");
+	            			sencdCode(400, response, "API error");
+
+	            		}
+	            		else{
+	            			response.send(row);
+	            		}
+	            	});
 	            }
 			}
 

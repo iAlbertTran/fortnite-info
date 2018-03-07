@@ -5,24 +5,22 @@ body {
   background-color: #f9f9f9;
 }
 
-.category{
-	display: grid;
-	grid-column: 2 / 3;
-}
-
-.userInfo{
-	display: grid;
-	grid-template-columns: 150px;
-	margin: 1vh 0;
-	font-size: 16px;
+#root{
+	width: 98vw;
 	margin: 1vw;
+}
+#root #content{
+	display: grid;
+	grid-template-columns: max-content;
 }
 
 #playerForm{
-	margin: 1vw;
+	grid-row: 1 / 2;
+	grid-column: 1 / 2;
 	display: grid;
-
-	justify-content: center;
+	grid-template-columns: auto;
+	justify-content: start;
+	width: auto;
 }
 
 #playerForm label{
@@ -35,6 +33,7 @@ body {
 
 #playerForm input, #playerForm button{
 	margin: 2px;
+	height: 22px;
 }
 
 #playerForm .userForm{
@@ -45,6 +44,152 @@ body {
 
 #playerForm .userForm input, #playerForm .userForm select{
 	margin: 0 5px;
+	padding: 0;
+}
+
+#stat-checkbox{
+	grid-row: 1 / 2;
+	grid-column: 2 / 3;
+
+	display: grid;
+	justify-self: end;
+	grid-auto-flow: column;
+	grid-template-columns: max-content max-content max-content;
+	margin-right: 1vw;
+}
+
+#stat-checkbox #overall{
+	grid-column: 2 / 3;
+	display: grid;
+	grid-template-columns: max-content;
+	margin: 0 1vw;
+	height: auto;
+}
+
+#stat-checkbox #overall .title{
+	text-align: center;
+	align-self: end;
+}
+
+#stat-checkbox #overall #overall-wrapper{
+	height: 100px;
+	overflow-y: scroll;
+	align-self: end;
+}
+
+#stat-checkbox #overall #overall-wrapper .text{
+	margin: 0;
+}
+
+
+#stat-checkbox #overall .individual-check{
+	display: flex;
+	justify-content: space-between;
+}
+
+#stat-checkbox #overall .individual-check .text{
+	margin-right: 1vw;
+}
+
+#stat-checkbox #users{
+	grid-column: 1 / 2;
+
+	display: grid;
+	grid-template-columns: max-content;
+}
+#stat-checkbox #users #user-title{
+	text-align: center;
+	align-self: end;
+}
+
+#stat-checkbox #users #individual-list{
+	height: 100px;
+	overflow-y: scroll;
+	align-self: end;
+
+}
+
+#stat-checkbox #users .individuals{
+	display: flex;
+	justify-content: space-between;
+}
+#stat-checkbox #checkboxes{
+	grid-column: 1 / 4;
+	grid-row: 2 / 3;
+
+	height: 100px;
+	overflow-y: scroll;
+
+	display: grid;
+}
+
+#stat-checkbox #checkboxes .individual-check{
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: 100px;
+	padding: 5px 0;
+}
+
+#stat-checkbox #checkboxes .individual-check .text{
+	grid-column: 1 / 2;
+	padding-right: 5px;
+	text-align: end;
+
+}
+
+#stat-checkbox #checkboxes .individual-check .inputs{
+	display: flex;
+	justify-content: space-around;
+	border-bottom: grey 1px solid;
+}
+
+
+#stat-checkbox #mode-stats{
+	display: grid;
+	grid-template-columns: 100px max-content max-content;
+}
+
+#stat-checkbox #mode-stats .life{
+	grid-column: 2 / 3;
+	grid-row: 1 / 2;
+
+	border-right: grey 1px solid;
+}
+
+#stat-checkbox #mode-stats .life .title, #stat-checkbox #mode-stats .season .title{
+	text-align: center;
+	border-bottom: grey 1px solid;
+	padding-bottom: 5px;
+}
+
+#stat-checkbox #mode-stats .season{
+	grid-column: 3 / 4;
+	grid-row: 1 / 2;
+}
+
+#stat-checkbox #mode-stats .mode ,#stat-checkbox #mode-stats .season .mode{
+	display: flex;
+	justify-content: space-around;
+	border-bottom: grey 1px solid;
+
+}
+
+#stat-checkbox #mode-stats .mode #duo, 
+#stat-checkbox #mode-stats .mode #solo, 
+#stat-checkbox #mode-stats .mode #squad,
+#stat-checkbox #mode-stats .season .mode #solo, 
+#stat-checkbox #mode-stats .season .mode #duo,
+#stat-checkbox #mode-stats .season .mode #squad{
+	padding: 5px;
+}
+
+.userInfo{
+	grid-column: 1 / 3;
+	display: grid;
+	grid-template-columns: max-content;
+	font-size: 16px;
+	margin: 1vh 0;
+	width: 98vw;
 }
 
 .userID{
@@ -58,312 +203,50 @@ body {
 
 	width: 150px;
 	background-color: #89bdd3;
-	padding: 5px;
+	padding: 5px 0;
 	border-bottom: #f9f9f9 1px solid;
 }
 
-.total-lifetime-stats{
-	grid-row: 2 / 3;
-	grid-column: 1 / 16;
-	overflow-x: scroll;
+.userID .checkBox{
+	display: flex;
 }
 
 .lifetime-title{
-	grid-row: 1 / 2;
-	grid-column: 1 / 16;
+	grid-row: 2 / 3;
 
 	background-color: #89bdd3;
-	width: 100%;
+	width: 98vw;
 	text-align: center;
 
 	padding: 1vh 0;
 }
 
-.total-lifetime-stats .subcategory{
+.total-lifetime-stats{
 	grid-row: 3 / 4;
-	width: 90px;
+	width: inherit;
+	overflow-x: scroll;
+
+	display: grid;
+	grid-auto-flow: column;
+}
+
+.total-lifetime-stats .overall-stats{
+	justify-self: center;
+	width: 100%;
+	min-width: 150px;
+}
+
+.total-lifetime-stats .subcategory-stat{
+	grid-row: 3 / 4;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
+	text-align: center;
 }
 
 .total-lifetime-stats .subcategory-title{
 	grid-row: 2 / 3;
 	background-color: #e3e3e3;
-	width: auto;
-	min-width: 100px;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
 	text-align: center;
-}
-
-.total-lifetime-stats .subcategory{
-	width: auto;
-	text-align: center;
-}
-
-.game-mode{
-	display: grid;
-	grid-row: 3 / 4;
-	grid-column: 1 / 16;
-	overflow-x: scroll;
-}
-
-.game-mode .overall{
-	grid-row: 1 / 2;
-	grid-column: 1 / 21;
-	background-color: #89bdd3;
-	width: 100%;
-	text-align: center;
-	padding: 1vh 0;
-}
-
-
-.game-mode .subcategory-titles-overall{
-	grid-row: 2 / 3;
-	grid-column: 1 / 2;
-
-	display: grid;
-
-	grid-template-columns: 90px;
-	height: 100%;
-}
-
-.game-mode .subcategory-titles-overall .subcategory-title{
-	grid-row: 1 / 2;
-	width: 90px;
-	padding-left: 1vw;
-
-	display: flex;
-	align-items: center;
-	border: #f9f9f9 1px solid;
-	text-align: center;
-
-}
-
-.game-mode .subcategory-titles-overall .mode{
-	width: auto;
-	padding-left: 1vw;
-	border-left: #e3e3e3 1px solid;
-}
-
-
-.game-mode .category{
-	grid-column: 1 / 2;
-
-	display: grid;
-	grid-template-columns: 90px;
-}
-
-.game-mode .category .subcategory{
-	grid-row: 1 / 2;
-}
-
-.game-mode .category .category-title{
-	grid-column: 1 / 2;
-	width: auto;
-	padding: 1vh 0;
-	border: #f9f9f9 1px solid;
-	border-left: #c9c9c9 1px solid;
-	padding-left: 1vw;
-}
-
-
-.game-mode .lifetime-solos{
-	grid-row: 3 / 4;
-	background-color: #c9c9c9;
-}
-
-.game-mode .lifetime-duos{
-	grid-row: 4 / 5;
-	background-color: #c9c9c9;
-}
-
-.game-mode .lifetime-squads{
-	grid-row: 5 / 6;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .current{
-	grid-row: 6 / 7;
-	grid-column: 1 / 21;
-	background-color: #89bdd3;
-	width: 100%;
-	text-align: center;
-	
-	padding: 1vh 0;
-}
-
-.game-mode .subcategory-titles-season{
-	grid-row: 7 / 8;
-	justify-self: start;
-	display: grid;
-	grid-template-columns: 90px;
-	background-color: #9ad3de;
-
-
-}
-
-.game-mode .subcategory-titles-season .subcategory-title{
-	grid-row: 1 / 2;
-	width: 90px;
-	padding-left: 1vw;
-
-	display: flex;
-	align-items: center;
-	border: #f9f9f9 1px solid;
-
-
-}
-
-.game-mode .subcategory-titles-season .mode{
-	width: auto;
-	padding-left: 1vw;
-	border-left: #e3e3e3 1px solid;
-}
-
-.game-mode .category .subcategory{
-	width: 90px;
-	padding-left: 1vw;
-
-	display: flex;
-	align-items: center;
-	border: #f9f9f9 1px solid;
-}
-
-.game-mode .season-solos{
-	grid-row: 8 / 9;
-	background-color: #c9c9c9;
-}
-
-.game-mode .season-duos{
-	grid-row: 9 / 10;
-	background-color: #c9c9c9;
-}
-
-.game-mode .season-squads{
-	grid-row: 10 / 11;
-	background-color: #c9c9c9;
-
-}
-
-
-.game-mode .subcategory-titles-overall .top1, .game-mode .subcategory-titles-season .top1, .game-mode .category .top1{
-	grid-column: 2 / 3;
-	background-color: #9ad3de;
-}
-
-.game-mode .subcategory-titles-overall .top3, .game-mode .subcategory-titles-season .top3, .game-mode .category .top3{
-	grid-column: 3 / 4;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .top5, .game-mode .subcategory-titles-season .top5, .game-mode .category .top5{
-	grid-column: 4 / 5;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .top6, .game-mode .subcategory-titles-season .top6, .game-mode .category .top6{
-	grid-column: 5 / 6;
-	background-color: #c9c9c9;
-
-}
-
-
-.game-mode .subcategory-titles-overall .top10, .game-mode .subcategory-titles-season .top10, .game-mode .category .top10{
-	grid-column: 6 / 7;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .top12, .game-mode .subcategory-titles-season .top12, .game-mode .category .top12{
-	grid-column: 7 / 8;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .top25, .game-mode .subcategory-titles-season .top25, .game-mode .category .top25{
-	grid-column: 8 / 9;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .matches, .game-mode .subcategory-titles-season .matches, .game-mode .category .matches{
-	grid-column: 9 / 10;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .winRatio, .game-mode .subcategory-titles-season .winRatio, .game-mode .category .winRatio{
-	grid-column: 10 / 11;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .minutesPlayed, .game-mode .subcategory-titles-season .minutesPlayed, .game-mode .category .minutesPlayed{
-	grid-column: 11 / 12;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .kpm, .game-mode .subcategory-titles-season .kpm, .game-mode .category .kpm{
-	grid-column: 12 / 13;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .kpg, .game-mode .subcategory-titles-season .kpg, .game-mode .category .kpg{
-	grid-column: 13 / 14;
-	background-color: #c9c9c9;
-}
-
-.game-mode .subcategory-titles-overall .kills, .game-mode .subcategory-titles-season .kills, .game-mode .category .kills{
-	grid-column: 14 / 15;
-	background-color: #9ad3de;
-}
-
-.game-mode .subcategory-titles-overall .avgTimePlayed, .game-mode .subcategory-titles-season .avgTimePlayed, .game-mode .category .avgTimePlayed{
-	grid-column: 15 / 16;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .scorePerMatch, .game-mode .subcategory-titles-season .scorePerMatch, .game-mode .category .scorePerMatch{
-	grid-column: 16 / 17;
-	background-color: #9ad3de;
-}
-
-
-.game-mode .subcategory-titles-overall .scorePerMin, .game-mode .subcategory-titles-season .scorePerMin, .game-mode .category .scorePerMin{
-	grid-column: 17 / 18;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .score, .game-mode .subcategory-titles-season .score, .game-mode .category .score{
-	grid-column: 18 / 19;
-	background-color: #9ad3de;
-}
-
-
-
-.game-mode .subcategory-titles-overall .kd, .game-mode .subcategory-titles-season .kd, .game-mode .category .kd{
-	grid-column: 19 / 20;
-	background-color: #c9c9c9;
-}
-
-
-.game-mode .subcategory-titles-overall .trnRating, .game-mode .subcategory-titles-season .trnRating, .game-mode .category .trnRating{
-	grid-column: 20 / 21;
-	background-color: #9ad3de;
-}
-
-.percentile{
-	display: none;
-}
-
-.game-mode .subcategory-titles-overall .subcategory-title, .game-mode .subcategory-titles-season .subcategory-title{
-	background-color: #e3e3e3;
 }

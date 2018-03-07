@@ -78,10 +78,11 @@ class Form extends React.Component{
 
 	callApi = async (event) => {
   		event.preventDefault();
+
   		let users = this.state.users;
 		let platforms = this.state.platforms;
 
-		let url = "/query?op=userInfo";
+		let url = "/query?op=update";
 
 		for(let i = 0; i < users.length; ++i){
 			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
@@ -89,12 +90,15 @@ class Form extends React.Component{
 		const response = await fetch(url);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
-		else if (response.status === 200) console.log(body.message);
+		else if (response.status === 200) {
+			this.props.handleNewInfo(body);
+		}
 
   	};
 
 
 	render(){
+
 		let formNumber = this.state.forms;
 		const users = this.state.users;
 		const forms = formNumber.map((curr, index) => {
@@ -122,13 +126,156 @@ class Form extends React.Component{
 				<label>
 					{forms}
 				</label>
-				<input type='submit' value='Get Info' />
+				<input type='submit' value='Update' />
 				<button onClick={this.addForm}>Add Player</button>
 				{remove_button}
 			</form>
 		);
 	}
 
+}
+
+function CheckBoxStack(props){
+	return(
+		<div className="individual-check">
+			<div className="text">{props.text}</div>
+			<div className="inputs">
+				<input className="lifetime-solo" value={props.value} type='checkbox'/>
+				<input className="lifetime-duo" value={props.value}type='checkbox'/>
+				<input className="lifetime-squad" value={props.value} type='checkbox'/>
+				<input className="season-solo" value={props.value} type='checkbox'/>
+				<input className="season-duo" value={props.value} type='checkbox'/>
+				<input className="season-squad" value={props.value} type='checkbox'/>
+			</div>
+		</div>
+	);
+}
+
+class CheckSection extends React.Component{
+	render(){
+		return(
+			<div id='checkboxes'>
+				<CheckBoxStack text="Wins" value="Wins" />
+				<CheckBoxStack text="Top 3" value="Top 3" />
+				<CheckBoxStack text="Top 5" value="Top 5" />
+				<CheckBoxStack text="Top 6" value="Top 6" />
+				<CheckBoxStack text="Top 10" value="Top 10" />
+				<CheckBoxStack text="Top 12" value="Top 12" />
+				<CheckBoxStack text="Top 25" value="Top 25" />
+				<CheckBoxStack text="Matches" value="Matches" />
+				<CheckBoxStack text="Win %" value="Win %" />
+				<CheckBoxStack text="Kills" value="Kills" />
+				<CheckBoxStack text="Kills/Min" value="Kills Per Min" />
+				<CheckBoxStack text="Kills/Match" value="Kils Per Match" />
+				<CheckBoxStack text="Time/Match" value="Avg Match Time" />
+				<CheckBoxStack text="K/D" value="K/d" />
+				<CheckBoxStack text="Time Played" value="Time Played" />
+				<CheckBoxStack text="Score/Match" value="Score per Match" />
+				<CheckBoxStack text="Score/Min" value="Score per Minute" />
+				<CheckBoxStack text="Score" value="Score" />
+				<CheckBoxStack text="TRN Rating" value="TRN Ratings" />
+			</div>
+		);
+	}
+}
+
+function CheckMode(props){
+	return(
+		<div className={props.category}>
+			<div className="title">{props.title}</div>
+			<div className="mode">
+				<div id='solo'>Solo</div>
+				<div id='duo'>Duo</div>
+				<div id='squad'>Squad</div>
+			</div>
+		</div>
+	);
+}
+
+class OverallChecks extends React.Component{
+
+	handleChange(event){
+
+		let columns = document.getElementsByClassName(event.target.value);
+
+		for(let i = 0; i < columns.length; ++i){
+			if(columns[i].style.display === 'block' || !columns[i].style.display){
+				columns[i].style.display = 'none';
+			}
+			else{
+				columns[i].style.display = 'block';
+			}
+		}
+	}
+
+	render(){
+		return(
+			<div className="individual-check">
+				<div className="text">{this.props.text}</div>
+				<input className="lifetime" value={this.props.value} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+			</div>
+		);
+	}
+}
+class Checkboxes extends React.Component{
+
+	handleChange(event){
+		let user = document.getElementById(event.target.value);
+
+		if(user.style.display === 'grid' || !user.style.display){
+			user.style.display = 'none';
+		}
+		else{
+			user.style.display = 'grid';
+		}
+	}
+
+	render(){
+		let data = this.props.data;
+		const user_list = data.map((curr, index) => {
+			return (
+				<div key={curr.User} className="individuals">
+					<div>{curr.User}</div>
+					<input className="user-list" value={curr.User} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+				</div>
+			);
+		});
+		return(
+			<div id="stat-checkbox">
+				<div id="users">
+					<div id="user-title">Users</div>
+					<div id="individual-list">
+						{user_list}
+					</div>
+				</div>
+				<div id="overall">
+					<div className="title">Overall</div>
+					<div id="overall-wrapper">
+						<OverallChecks value="Wins" text="Wins" />
+						<OverallChecks value="Top 3" text="Top 3" />
+						<OverallChecks value="Top 3s" text="Top 3s" />
+						<OverallChecks value="Top 5s" text="Top 5s" />
+						<OverallChecks value="Top 6s" text="Top 6s" />
+						<OverallChecks value="Top 12s" text="Top 12s" />
+						<OverallChecks value="Top 25s" text="Top 25s" />
+						<OverallChecks value="Matches Played" text="# of Matches" />
+						<OverallChecks value="Win%" text="Win%" />
+						<OverallChecks value="Score" text="Score" />
+						<OverallChecks value="Kills" text="Kills" />
+						<OverallChecks value="K/d" text="K/D" />
+						<OverallChecks value="Kills Per Min" text="Kills/Min" />
+						<OverallChecks value="Time Played" text="Time Played" />
+						<OverallChecks value="Avg Survival Time" text="Time/Match" />
+					</div>
+				</div>
+				<div id="mode-stats">
+					<CheckMode category="life" title="Lifetime Stats"/>
+					<CheckMode category="season" title="Season Stats"/>
+					<CheckSection />
+				</div>
+			</div>
+		);
+	}
 }
 
 function UserID(props){
@@ -144,156 +291,25 @@ function UserID(props){
 function OverallStats(props){
 
 	const data = props.data;
-	let lifetime;
-	let titleData_lifetime;
+	let data_overall;
 
 	//get the title for subcategories of each mode and lifetime stats
-	if(!data.error){
-		titleData_lifetime = data.lifeTimeStats.map((curr,index) =>{
+	if(data){
+		data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
 			return(
-				<div key={curr.key} className={curr.key + " subcategory-title"}>
-					{curr.key}
+				<div key={curr[0]} className={curr[0] + " overall-stats"}>
+					<div className="subcategory-title">{curr[0]}</div>
+					<div className="subcategory-stat">{curr[1]}</div>
 				</div>
 			);
 		});
 	}
 
-
-
-	const lifetimeStats = data.lifeTimeStats;
-
-	lifetime = lifetimeStats.map((curr,index) =>{
-		const key = curr.key;
-		const value = curr.value;
-
-		return(
-			<div className={key + ' subcategory'}>
-				<div>{value}</div>
-			</div>
-		);
-	});
 
 
 	return(
 		<div className="total-lifetime-stats category">
-			<div className="lifetime-title">Overall Statistics</div>
-			{titleData_lifetime}
-			{lifetime}
-		</div>
-	);
-}
-
-function GameMode(props){
-	const data = props.data;
-	let titleData_mode_overall;
-	let titleData_mode_season;
-	let stats_per_mode;
-
-	//get the title for subcategories of each mode and lifetime stats
-	if(!data.error){
-		titleData_mode_overall = Object.entries(data.stats.p2).map((curr,index) =>{
-			return(
-				<div key={curr[0]} className={curr[0] + " subcategory-title"}>
-					{curr[1].label}
-				</div>
-			);
-		});
-
-		titleData_mode_overall.unshift(<div className="mode subcategory-title">Mode</div>);
-
-		titleData_mode_season= Object.entries(data.stats.p2).map((curr,index) =>{
-			return(
-				<div key={curr[0]} className={curr[0] + " subcategory-title"}>
-					{curr[1].label}
-				</div>
-			);
-		});
-
-		titleData_mode_season.unshift(<div className="mode subcategory-title">Mode</div>);
-	}
-
-	const stats = data.stats;
-	//parses both season data and lifetime data
-	stats_per_mode = Object.entries(stats).map((curr,index) =>{
-		let key;
-		let section
-		switch(curr[0]){
-
-				case "p2":
-					key = "lifetime-solos";
-					section = "Solos"
-					break;
-
-				case "p10":
-					key = "lifetime-duos";
-					section = "Duos"
-					break;
-
-				case "p9":
-					key = "lifetime-squads";
-					section = "Squads"
-					break;
-
-				case "curr_p2":
-					key = "season-solos";
-					section = "Solos"
-					break;
-
-				case "curr_p10":
-					key = "season-duos";
-					section = "Duos"
-					break;
-
-				case "curr_p9":
-					key = "season-squads";
-					section = "Squads"
-					break;
-
-				default:
-					return(<div></div>);
-			}
-		//if percentile isn't present, set to 0
-		const stats = Object.entries(curr[1]).map((curr, index) => {
-			const percentile = curr[1].percentile ?
-				curr[1].percentile : "N/A";
-
-			return(
-				<div className={curr[0] + ' subcategory'}>
-					<div>{curr[1].value}</div>
-					<div className="percentile">{percentile}</div>
-				</div>
-			);
-			
-		});
-
-
-		//if a win ratio is not present it means that the player hasn't won a game in that category, thus the field is omitted. 
-		//So we create one to keep the table looking uniform
-		if(!curr[1].winRatio){
-			const empty_winRatio = 
-				(<div className="winRatio subcategory">
-					<div>0</div>
-					<div className="percentile">N/A</div>
-				</div>
-				);
-			stats.push(empty_winRatio);
-		}
-
-		return (
-			<div className={key + ' category'}>
-				<div className="category-title">{section}</div>
-				{stats}
-			</div>
-			);
-	});
-
-	return(
-		<div className="game-mode">
-			<div className="game-mode-title overall">Game Mode Statistics (Overall)</div>
-			<div className="subcategory-titles-overall">{titleData_mode_overall}</div>
-			<div className="game-mode-title current">Game Mode Statistics (Current Season)</div>
-			<div className="subcategory-titles-season">{titleData_mode_season}</div>
-			{stats_per_mode}
+			{data_overall}
 		</div>
 	);
 }
@@ -309,14 +325,18 @@ function UserInfo(props){
 			);
 		}
 
-		const user = curr.epicUserHandle;
-		const platform = curr.platformNameLong;
+		const user = curr.User;
+		const platform = curr.Platform;
 
 		return(
-			<div className="userInfo" id={user}>
-				<UserID user={user} platform={platform} />
+			<div key={user} className="userInfo" id={user}>
+				<UserID 
+					user={user} 
+					platform={platform} 
+					handleCheck={props.handleCheck}
+				/>
+				<div className="lifetime-title">Overall Statistics</div>
 				<OverallStats data={curr} />
-				<GameMode data={curr}/>
 			</div>
 		);
 	}); 
@@ -332,16 +352,6 @@ class Site extends React.Component{
 		}
 	}
 
-  	/*componentDidMount() {
-    	this.callApi()
-      	.then(res => this.setState({ response: res.express }))
-      	.catch(err => console.log(err));
- 	}*/
-
-
-
-	 //requests data from api
-
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
 		this.setState({
@@ -349,15 +359,30 @@ class Site extends React.Component{
 		});
 	}
 
-	render(){
+	componentWillMount = async () => {
+		let url = "/query?op=userInfo";
 
+		const response = await fetch(url);
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+		else if (response.status === 200) {
+			this.setState({data: body});
+		}
+
+	}
+
+	render(){
 		return(
-			<div>
-				<Form 
-					data={this.state.data} 
+			<div id="content">
+				<Form  
 					handleNewInfo={(newData) => this.handleNewInfo(newData)}
 				/>
-				<UserInfo data={this.state.data}/>
+				<Checkboxes 
+					data={this.state.data}
+				/>
+				<UserInfo 
+					data={this.state.data} 
+				/>
 			</div>
 		);
 	}
