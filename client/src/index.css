@@ -29,8 +29,7 @@ body {
 
 #playerForm input, #playerForm button{
 	margin: 2px;
-	padding: 2px;
-	height: 17px;
+	height: 22px;
 }
 
 #playerForm .userForm{
@@ -60,16 +59,24 @@ body {
 	display: grid;
 	grid-template-columns: max-content;
 	width: 122px;
+	margin-right: 1vw;
 }
 
 #stat-checkbox #overall .title{
 	text-align: center;
+	align-self: end;
 }
 
 #stat-checkbox #overall #overall-wrapper{
 	height: 100px;
 	overflow-y: scroll;
+	align-self: end;
 }
+
+#stat-checkbox #overall #overall-wrapper .text{
+	margin: 0;
+}
+
 
 #stat-checkbox #overall .individual-check{
 	display: flex;
@@ -116,6 +123,8 @@ body {
 #stat-checkbox #mode-stats .life{
 	grid-column: 2 / 3;
 	grid-row: 1 / 2;
+
+	border-right: grey 1px solid;
 }
 
 #stat-checkbox #mode-stats .life .title, #stat-checkbox #mode-stats .season .title{
