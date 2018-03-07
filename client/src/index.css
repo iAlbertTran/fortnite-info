@@ -5,24 +5,18 @@ body {
   background-color: #f9f9f9;
 }
 
-.category{
+#root #content{
 	display: grid;
-	grid-column: 2 / 3;
-}
-
-.userInfo{
-	display: grid;
-	grid-template-columns: 150px;
-	margin: 1vh 0;
-	font-size: 16px;
 	margin: 1vw;
 }
 
 #playerForm{
-	margin: 1vw;
+	grid-row: 1 / 2;
+	grid-column: 1 / 2;
 	display: grid;
 
-	justify-content: center;
+	justify-content: start;
+	width: auto;
 }
 
 #playerForm label{
@@ -35,6 +29,8 @@ body {
 
 #playerForm input, #playerForm button{
 	margin: 2px;
+	padding: 2px;
+	height: 17px;
 }
 
 #playerForm .userForm{
@@ -45,6 +41,111 @@ body {
 
 #playerForm .userForm input, #playerForm .userForm select{
 	margin: 0 5px;
+	padding: 0;
+	height: auto;
+}
+
+#stat-checkbox{
+	grid-row: 1 / 2;
+	grid-column: 2 / 3;
+
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: 122px;
+	margin-right: 1vw;
+}
+
+#stat-checkbox #overall{
+	grid-column: 1 / 2;
+	display: grid;
+	grid-template-columns: max-content;
+	width: 122px;
+}
+
+#stat-checkbox #overall .title{
+	text-align: center;
+}
+
+#stat-checkbox #overall #overall-wrapper{
+	height: 100px;
+	overflow-y: scroll;
+}
+
+#stat-checkbox #overall .individual-check{
+	display: flex;
+	justify-content: space-between;
+}
+
+#stat-checkbox #overall .individual-check .text{
+	margin-right: 1vw;
+}
+#stat-checkbox #checkboxes{
+	grid-column: 1 / 4;
+	grid-row: 2 / 3;
+
+	height: 100px;
+	overflow-y: scroll;
+}
+
+#stat-checkbox #checkboxes .individual-check{
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: 100px;
+	padding: 5px 0;
+}
+
+#stat-checkbox #checkboxes .individual-check .text{
+	grid-column: 1 / 2;
+	padding-right: 5px;
+	text-align: end;
+
+}
+
+#stat-checkbox #checkboxes .individual-check .inputs{
+	display: flex;
+	justify-content: space-around;
+	border-bottom: grey 1px solid;
+}
+
+
+#stat-checkbox #mode-stats{
+	display: grid;
+	grid-template-columns: 100px;
+}
+
+#stat-checkbox #mode-stats .life{
+	grid-column: 2 / 3;
+	grid-row: 1 / 2;
+}
+
+#stat-checkbox #mode-stats .life .title, #stat-checkbox #mode-stats .season .title{
+	text-align: center;
+	border-bottom: grey 1px solid;
+	padding-bottom: 5px;
+}
+
+#stat-checkbox #mode-stats .season{
+	grid-column: 3 / 4;
+	grid-row: 1 / 2;
+}
+
+#stat-checkbox #mode-stats .mode ,#stat-checkbox #mode-stats .season .mode{
+	display: flex;
+	justify-content: space-around;
+	border-bottom: grey 1px solid;
+	padding: 5px 0;
+
+}
+
+.userInfo{
+	grid-column: 1 / 3;
+	display: grid;
+	grid-template-columns: 150px;
+	margin: 1vh 0;
+	font-size: 16px;
+	margin: 1vw;
+
+	width: 98vw;
 }
 
 .userID{
@@ -62,42 +163,43 @@ body {
 	border-bottom: #f9f9f9 1px solid;
 }
 
-.total-lifetime-stats{
-	grid-row: 2 / 3;
-	grid-column: 1 / 16;
-	overflow-x: scroll;
+.userID .checkBox{
+	display: flex;
 }
 
 .lifetime-title{
-	grid-row: 1 / 2;
-	grid-column: 1 / 16;
+	grid-row: 2 / 3;
 
 	background-color: #89bdd3;
-	width: 100%;
+	width: 98vw;
 	text-align: center;
 
 	padding: 1vh 0;
 }
 
-.total-lifetime-stats .subcategory{
+.total-lifetime-stats{
 	grid-row: 3 / 4;
-	width: 90px;
+	width: 98vw;
+	overflow-x: scroll;
+
+	display: grid;
+	grid-auto-flow: column;
+}
+
+.total-lifetime-stats .subcategory-stat{
+	grid-row: 3 / 4;
+	width: 150px;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
+	text-align: center;
 }
 
 .total-lifetime-stats .subcategory-title{
 	grid-row: 2 / 3;
 	background-color: #e3e3e3;
-	width: auto;
-	min-width: 100px;
+	width: 150px;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
-	text-align: center;
-}
-
-.total-lifetime-stats .subcategory{
-	width: auto;
 	text-align: center;
 }
 
