@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 //import $ from "jquery";
 //https://medium.freecodecamp.org/how-to-make-create-react-app-work-with-a-node-backend-api-7c5c48acb1b0
+let initialData;
 class Form extends React.Component{
 	constructor(props){
 		super(props);
@@ -81,7 +82,7 @@ class Form extends React.Component{
   		let users = this.state.users;
 		let platforms = this.state.platforms;
 
-		let url = "/query?op=userInfo";
+		let url = "/query?op=update";
 
 		for(let i = 0; i < users.length; ++i){
 			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
@@ -124,7 +125,7 @@ class Form extends React.Component{
 				<label>
 					{forms}
 				</label>
-				<input type='submit' value='Get Info' />
+				<input type='submit' value='Update' />
 				<button onClick={this.addForm}>Add Player</button>
 				{remove_button}
 			</form>
@@ -180,7 +181,7 @@ class CheckSection extends React.Component{
 function CheckMode(props){
 	return(
 		<div className={props.category}>
-			<div className="title">Season</div>
+			<div className="title">{props.title}</div>
 			<div className="mode">
 				<div id='solo'>Solo</div>
 				<div id='duo'>Duo</div>
@@ -194,17 +195,17 @@ function OverallChecks(props){
 	return(
 		<div className="individual-check">
 			<div className="text">{props.text}</div>
-			<div className="inputs">
-				<input className="lifetime" value={props.value} type='checkbox'/>
-			</div>
+			<input className="lifetime" value={props.value} type='checkbox'/>
 		</div>
 	);
 }
 class Checkboxes extends React.Component{
 	render(){
-
+		let data = this.props.data;
 		return(
 			<div id="stat-checkbox">
+				<div id="users">
+				</div>
 				<div id="overall">
 					<div className="title">Overall</div>
 					<div id="overall-wrapper">
@@ -226,8 +227,8 @@ class Checkboxes extends React.Component{
 					</div>
 				</div>
 				<div id="mode-stats">
-					<CheckMode category="life"/>
-					<CheckMode category="season"/>
+					<CheckMode category="life" title="Lifetime Stats"/>
+					<CheckMode category="season" title="Season Stats"/>
 					<CheckSection />
 				</div>
 			</div>
@@ -306,10 +307,11 @@ class Site extends React.Component{
 		super(props);
 		this.state = {
 			data: [],
-			response: ''
+			response: '',
+			initialData: []
 		}
 	}
-
+	
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
 		this.setState({
@@ -318,11 +320,9 @@ class Site extends React.Component{
 	}
 
 	render(){
-
 		return(
 			<div id="content">
-				<Form 
-					data={this.state.data} 
+				<Form  
 					handleNewInfo={(newData) => this.handleNewInfo(newData)}
 				/>
 				<Checkboxes 
@@ -337,4 +337,3 @@ class Site extends React.Component{
 }
 
 ReactDOM.render(<Site />, document.getElementById('root'));
-
