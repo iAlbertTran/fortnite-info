@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 //import $ from "jquery";
 //https://medium.freecodecamp.org/how-to-make-create-react-app-work-with-a-node-backend-api-7c5c48acb1b0
-let initialData;
 class Form extends React.Component{
 	constructor(props){
 		super(props);
@@ -79,6 +78,7 @@ class Form extends React.Component{
 
 	callApi = async (event) => {
   		event.preventDefault();
+
   		let users = this.state.users;
 		let platforms = this.state.platforms;
 
@@ -98,6 +98,7 @@ class Form extends React.Component{
 
 
 	render(){
+
 		let formNumber = this.state.forms;
 		const users = this.state.users;
 		const forms = formNumber.map((curr, index) => {
@@ -191,20 +192,61 @@ function CheckMode(props){
 	);
 }
 
-function OverallChecks(props){
-	return(
-		<div className="individual-check">
-			<div className="text">{props.text}</div>
-			<input className="lifetime" value={props.value} type='checkbox'/>
-		</div>
-	);
+class OverallChecks extends React.Component{
+
+	handleChange(event){
+
+		let columns = document.getElementsByClassName(event.target.value);
+
+		for(let i = 0; i < columns.length; ++i){
+			if(columns[i].style.display === 'block' || !columns[i].style.display){
+				columns[i].style.display = 'none';
+			}
+			else{
+				columns[i].style.display = 'block';
+			}
+		}
+	}
+
+	render(){
+		return(
+			<div className="individual-check">
+				<div className="text">{this.props.text}</div>
+				<input className="lifetime" value={this.props.value} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+			</div>
+		);
+	}
 }
 class Checkboxes extends React.Component{
+
+	handleChange(event){
+		let user = document.getElementById(event.target.value);
+
+		if(user.style.display === 'grid' || !user.style.display){
+			user.style.display = 'none';
+		}
+		else{
+			user.style.display = 'grid';
+		}
+	}
+
 	render(){
 		let data = this.props.data;
+		const user_list = data.map((curr, index) => {
+			return (
+				<div key={curr.User} className="individuals">
+					<div>{curr.User}</div>
+					<input className="user-list" value={curr.User} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+				</div>
+			);
+		});
 		return(
 			<div id="stat-checkbox">
 				<div id="users">
+					<div id="user-title">Users</div>
+					<div id="individual-list">
+						{user_list}
+					</div>
 				</div>
 				<div id="overall">
 					<div className="title">Overall</div>
@@ -250,11 +292,10 @@ function OverallStats(props){
 
 	const data = props.data;
 	let data_overall;
-	delete data.User;
-	delete data.Platform;
+
 	//get the title for subcategories of each mode and lifetime stats
 	if(data){
-		data_overall = Object.entries(data).map((curr,index) =>{
+		data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
 			return(
 				<div key={curr[0]} className={curr[0] + " overall-stats"}>
 					<div className="subcategory-title">{curr[0]}</div>
@@ -307,16 +348,27 @@ class Site extends React.Component{
 		super(props);
 		this.state = {
 			data: [],
-			response: '',
-			initialData: []
+			response: ''
 		}
 	}
-	
+
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
 		this.setState({
 			data: newData
 		});
+	}
+
+	componentWillMount = async () => {
+		let url = "/query?op=userInfo";
+
+		const response = await fetch(url);
+		const body = await response.json();
+		if (response.status !== 200) throw Error(body.message);
+		else if (response.status === 200) {
+			this.setState({data: body});
+		}
+
 	}
 
 	render(){
@@ -337,3 +389,4 @@ class Site extends React.Component{
 }
 
 ReactDOM.render(<Site />, document.getElementById('root'));
+
