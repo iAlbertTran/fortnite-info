@@ -170,8 +170,11 @@ function answer(query, response){
 				sendCode(400, appResponse, "API error");
 			}
 			else{
-				rows.unshift({mode: table});
-				data.push(rows);
+				for(let i = 0; i < rows.length; ++i){
+					rows[i].Mode = table;
+					data.push(rows[i]);
+				}
+				//data.push(rows);
 				--queries;
 
 				if(!queries){
