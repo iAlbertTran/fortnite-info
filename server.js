@@ -38,18 +38,19 @@ function sendCode(code, response, message){
 
 
 let queryCount;
+let error_list;
+let queries = 6;
 //answers valid queries
 function answer(query, response){
 	let answer = response;
 	let queryObj = querystring.parse(query);
 	let operation = queryObj.op;
-	console.log(operation);
-	console.log(query);
-
+	error_list = [];
+	let appResponse = response;
 
 	//gets user info from TRN API and inserts / updates database with the information
 	if(operation === "update"){
-		console.log('uploading user statistics to database...');
+		console.log('attemping to update user stats in database...');
 
 		//splits url to get usernames and their platform for each entry in array
 		let names_platforms = query.split("&"); 
@@ -57,6 +58,7 @@ function answer(query, response){
 
 		let users = [];
 		let platforms = [];
+		let data = [];
 
 		//splits it further to separate the user and platforms into two separate arrays
 		for(let i = 0; i < names_platforms.length; ++i){
@@ -65,11 +67,8 @@ function answer(query, response){
 			platforms.push(name_platform[1].split("=")[1]);
 		}
 
-		let data = [];
 		let remainingCalls = users.length;
 		let wait = 0;
-		//proxyurl needed to bypass cors
-		const proxyurl = "https://cors-anywhere.herokuapp.com/";
 
 		//for each user submitted
 		for(let i = 0; i < users.length; ++i){
@@ -87,17 +86,26 @@ function answer(query, response){
 			setTimeout(function(){
 				request(options, function(error, response, body){
 					if(!error && response.statusCode === 200){
-						APIcallback(body);
+						APIcallback(body, user, platform, appResponse);
 					}
 				});
 			}, wait);
+
 			wait += 2000;
 		}
 
 		//callback to resolve async problem with settimeout
-		function APIcallback(body){
+		function APIcallback(body, user, platform, appResponse){
 			let newData = JSON.parse(body);
+
+			if(newData.error){
+				newData.error = user + " on platform " + platform + " not found";
+				newData.User = user;
+				newData.Platform = platform;
+			}
+
 			data.push(newData);
+
 			--remainingCalls;
 			//send data after all api calls are done
 			if(remainingCalls === 0){
@@ -105,6 +113,15 @@ function answer(query, response){
 				//global variable. 7 updates to 7 tables per player. Shouldn't send a response until all updates are done;
 				queryCount = data.length * 7;
 				for(let i = 0; i < data.length; ++i){
+
+					//if api call to TRN can't find user...
+					if(data[i].error){
+						error_list.push(data[i]);
+						queryCount -= 7;
+						sendData(appResponse);
+						continue;
+					}
+
 					let accountName = data[i].epicUserHandle;
 					let platformName = data[i].platformName;
 
@@ -135,9 +152,43 @@ function answer(query, response){
 		});
 	}
 
+	else if(operation ==="modeData"){
 
+		console.log("Pulling data from all game mode tables");
+		let data = [];
+		pullModeData("SELECT * FROM overall_solo", "overall-solo");
+		pullModeData("SELECT * FROM overall_duo", "overall-duo");
+		pullModeData("SELECT * FROM overall_squad", "overall-squad");
+		pullModeData("SELECT * FROM season_solo", "season-solo");
+		pullModeData("SELECT * FROM season_duo", "season-duo");
+		pullModeData("SELECT * FROM season_squad", "season-squad");
+		
+		function pullModeData(cmdStr, table){
+			fortniteDB.all(cmdStr, function(err, rows){
+				if(err){
+				console.log(err+"\n");
+				sendCode(400, appResponse, "API error");
+			}
+			else{
+				for(let i = 0; i < rows.length; ++i){
+					rows[i].Mode = table;
+					data.push(rows[i]);
+				}
+				//data.push(rows);
+				--queries;
 
+				if(!queries){
+					console.log("query success!");
+					response.status(200);
+		            response.type("text/plain");
+		            response.send(data);
+		        }
+			}
+			});
+		}
+	}
 }
+
 
 function updateOverallStats(user, platform, data, response){
 	let lifeTime_keys = ['User','Platform'];
@@ -203,7 +254,6 @@ function updateModeStats(user, platform, data, response){
 		mode_values.unshift("'" + user + "'");
 
 		let cmdStr = "INSERT OR REPLACE INTO " + tableName + " (" + columnNames + ") VALUES (" + mode_values + ")";
-
 		fortniteDB.run(cmdStr, function(err){
 			console.log("updating " + tableName + " for " + user);
 
@@ -220,21 +270,31 @@ function updateModeStats(user, platform, data, response){
 
 	            --queryCount;
 
-	            if(queryCount === 0){
-	            	fortniteDB.all("SELECT * FROM overall", function(err, row){
-	            		if(err){
-	            			console.log(err+"\n");
-	            			sencdCode(400, response, "API error");
-
-	            		}
-	            		else{
-	            			response.send(row);
-	            		}
-	            	});
-	            }
+	            sendData(response);
 			}
 
 		});
 
 	});	
+}
+
+
+function sendData(response){
+	if(queryCount === 0){
+		fortniteDB.all("SELECT * FROM overall", function(err, row){
+			if(err){
+				console.log(err+"\n");
+				sendCode(400, response, "API error");
+
+			}
+			else{
+				let length = error_list.length;
+				while(length > 0){
+					row.push(error_list[--length]);
+				}
+				console.log('Data sent!');
+				response.send(row);
+			}
+		});
+	}
 }

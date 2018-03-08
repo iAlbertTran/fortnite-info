@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 //import $ from "jquery";
-//https://medium.freecodecamp.org/how-to-make-create-react-app-work-with-a-node-backend-api-7c5c48acb1b0
 class Form extends React.Component{
 	constructor(props){
 		super(props);
@@ -105,9 +104,18 @@ class Form extends React.Component{
 			return(
 				<div key={index} className="userForm">
 					Name:
-					<input className={index} type='text' value={this.state.users[index]} onChange={this.handleUserChange} required />
+					<input 
+						className={index} 
+						type='text' 
+						value={this.state.users[index]} 
+						onChange={this.handleUserChange} required />
 					Platform:
-					<select className={index} value={this.state.platforms[index]} onChange={this.handlePlatformChange} required>
+					<select 
+						className={index} 
+						value={this.state.platforms[index]} 
+						onChange={this.handlePlatformChange} 
+						required
+					>
 						<option>PC</option>
 						<option>PSN</option>
 						<option>XBL</option>
@@ -135,20 +143,55 @@ class Form extends React.Component{
 
 }
 
-function CheckBoxStack(props){
-	return(
-		<div className="individual-check">
-			<div className="text">{props.text}</div>
-			<div className="inputs">
-				<input className="lifetime-solo" value={props.value} type='checkbox'/>
-				<input className="lifetime-duo" value={props.value}type='checkbox'/>
-				<input className="lifetime-squad" value={props.value} type='checkbox'/>
-				<input className="season-solo" value={props.value} type='checkbox'/>
-				<input className="season-duo" value={props.value} type='checkbox'/>
-				<input className="season-squad" value={props.value} type='checkbox'/>
+class CheckBoxStack extends React.Component{
+
+	handleChange(){
+		console.log(1);
+
+
+		
+	}
+
+	render(){
+
+		return(
+			<div className="individual-check">
+				<div className="text">{this.props.text}</div>
+				<div className="inputs">
+					<input 
+						className="lifetime-solo" 
+						value={"table=overall_solo&column='" + this.props.value + "'"} 
+						type='checkbox' 
+						onChange={this.handleChange}/>
+					<input 
+						className="lifetime-duo" 
+						value={"table=overall_duo&column='" + this.props.value + "'"}
+						type='checkbox' 
+						onChange={this.handleChange}/>
+					<input 
+						className="lifetime-squad" 
+						value={"table=overall_squad&column'" + this.props.value + "'"} 
+						type='checkbox' 
+						onChange={this.handleChange}/>
+					<input 
+						className="season-solo" 
+						value={"table=season_solo&column='" + this.props.value + "'"} 
+						type='checkbox' 
+						onChange={this.handleChange}/>
+					<input 
+						className="season-duo" 
+						value={"table=season_duo&column='" + this.props.value + "'"} 
+						type='checkbox' 
+						onChange={this.handleChange}/>
+					<input 
+						className="season-squad" 
+						value={"table=season_squad&column='" + this.props.value + "'"} 
+						type='checkbox' 
+						onChange={this.handleChange}/>
+				</div>
 			</div>
-		</div>
-	);
+		);
+	}
 }
 
 class CheckSection extends React.Component{
@@ -212,7 +255,13 @@ class OverallChecks extends React.Component{
 		return(
 			<div className="individual-check">
 				<div className="text">{this.props.text}</div>
-				<input className="lifetime" value={this.props.value} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+				<input 
+					className="lifetime" 
+					value={this.props.value} 
+					type='checkbox' 
+					defaultChecked="true" 
+					onChange={this.handleChange}
+				/>
 			</div>
 		);
 	}
@@ -236,7 +285,13 @@ class Checkboxes extends React.Component{
 			return (
 				<div key={curr.User} className="individuals">
 					<div>{curr.User}</div>
-					<input className="user-list" value={curr.User} type='checkbox' defaultChecked="true" onChange={this.handleChange}/>
+					<input 
+						className="user-list" 
+						value={curr.User} 
+						type='checkbox' 
+						defaultChecked="true" 
+						onChange={this.handleChange}
+					/>
 				</div>
 			);
 		});
@@ -314,19 +369,32 @@ function OverallStats(props){
 	);
 }
 
+
+function ModeStats(props){
+	let modeData = props.modeData;
+	return(<div></div>);
+}
+
 function UserInfo(props){
 	const data = props.data;
-
+	let modeData = props.modeData;
 	//parses the data to get necessary info
 	const parseUserData = data.map((curr, index) => {
 		if(curr.error){
 			return(
-				<div key={curr.error} className="userID" id={curr.error}>{"Player named " + curr.error + " not found. Please Try Again."}</div>
+				<div key={curr.User} className="userInfo error" id={curr.User}>
+					{"Player named " + curr.error + ". Please Try Again."}
+				</div>
 			);
 		}
-
 		const user = curr.User;
 		const platform = curr.Platform;
+		let relevant_data = [];
+		for(let i = 0; i < modeData.length; ++i){
+			if(modeData[i].User === curr.User){
+				relevant_data.push(modeData[i]);
+			}
+		}
 
 		return(
 			<div key={user} className="userInfo" id={user}>
@@ -337,6 +405,8 @@ function UserInfo(props){
 				/>
 				<div className="lifetime-title">Overall Statistics</div>
 				<OverallStats data={curr} />
+				<div className="mode-title">Game Mode Statistics</div>
+				<ModeStats modeData={relevant_data} />
 			</div>
 		);
 	}); 
@@ -348,7 +418,8 @@ class Site extends React.Component{
 		super(props);
 		this.state = {
 			data: [],
-			response: ''
+			response: '',
+			modeData: []
 		}
 	}
 
@@ -365,10 +436,19 @@ class Site extends React.Component{
 		const response = await fetch(url);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
-		else if (response.status === 200) {
-			this.setState({data: body});
-		}
 
+
+		let mode_url = "/query?op=modeData";
+		
+		const mode_response = await fetch(mode_url);
+		const mode_body = await mode_response.json();
+
+		if (mode_response.status !== 200) throw Error(mode_body.message);
+		
+		this.setState({
+			data: body,
+			modeData: mode_body
+		});
 	}
 
 	render(){
@@ -382,6 +462,7 @@ class Site extends React.Component{
 				/>
 				<UserInfo 
 					data={this.state.data} 
+					modeData={this.state.modeData}
 				/>
 			</div>
 		);
