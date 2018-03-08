@@ -151,9 +151,32 @@ function answer(query, response){
 		});
 	}
 
+	else if(operation ==="modeData"){
 
+		console.log("Pulling data from all game mode tables");
 
+		let cmdStr = "SELECT * FROM overall_solo";
+		let cmdStr2 = "SELECT * FROM overall_duo";
+		let cmdStr3 = "SELECT * FROM overall_squad";
+		let cmdStr4 = "SELECT * FROM season_solo";
+		let cmdStr5 = "SELECT * FROM season_duo";
+		let cmdStr6 = "SELECT * FROM season_squad";
+
+		/*fortniteDB.all(cmdStr, function(err, rows){
+			if(err){
+			console.log(err+"\n");
+			sendCode(400, appResponse, "API error");
+		}
+		else{
+			console.log("query success!");
+			response.status(200);
+            response.type("text/plain");
+            response.send(rows);
+		}
+		});*/
+	}
 }
+
 
 function updateOverallStats(user, platform, data, response){
 	let lifeTime_keys = ['User','Platform'];
@@ -219,7 +242,6 @@ function updateModeStats(user, platform, data, response){
 		mode_values.unshift("'" + user + "'");
 
 		let cmdStr = "INSERT OR REPLACE INTO " + tableName + " (" + columnNames + ") VALUES (" + mode_values + ")";
-
 		fortniteDB.run(cmdStr, function(err){
 			console.log("updating " + tableName + " for " + user);
 
