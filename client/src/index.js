@@ -321,7 +321,7 @@ function UserInfo(props){
 	const parseUserData = data.map((curr, index) => {
 		if(curr.error){
 			return(
-				<div key={curr.error} className="userID" id={curr.error}>{"Player named " + curr.error + " not found. Please Try Again."}</div>
+				<div key={curr.error} className="userID" id={curr.error}>{"Player named " + curr.error + ". Please Try Again."}</div>
 			);
 		}
 
