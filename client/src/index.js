@@ -369,9 +369,15 @@ function OverallStats(props){
 	);
 }
 
+
+function ModeStats(props){
+	let modeData = props.modeData;
+	return(<div></div>);
+}
+
 function UserInfo(props){
 	const data = props.data;
-
+	let modeData = props.modeData;
 	//parses the data to get necessary info
 	const parseUserData = data.map((curr, index) => {
 		if(curr.error){
@@ -381,9 +387,14 @@ function UserInfo(props){
 				</div>
 			);
 		}
-
 		const user = curr.User;
 		const platform = curr.Platform;
+		let relevant_data = [];
+		for(let i = 0; i < modeData.length; ++i){
+			if(modeData[i].User === curr.User){
+				relevant_data.push(modeData[i]);
+			}
+		}
 
 		return(
 			<div key={user} className="userInfo" id={user}>
@@ -394,6 +405,8 @@ function UserInfo(props){
 				/>
 				<div className="lifetime-title">Overall Statistics</div>
 				<OverallStats data={curr} />
+				<div className="mode-title">Game Mode Statistics</div>
+				<ModeStats modeData={relevant_data} />
 			</div>
 		);
 	}); 
@@ -429,13 +442,13 @@ class Site extends React.Component{
 		
 		const mode_response = await fetch(mode_url);
 		const mode_body = await mode_response.json();
+
 		if (mode_response.status !== 200) throw Error(mode_body.message);
 		
 		this.setState({
 			data: body,
 			modeData: mode_body
 		});
-
 	}
 
 	render(){
@@ -449,6 +462,7 @@ class Site extends React.Component{
 				/>
 				<UserInfo 
 					data={this.state.data} 
+					modeData={this.state.modeData}
 				/>
 			</div>
 		);
