@@ -39,12 +39,14 @@ function sendCode(code, response, message){
 
 let queryCount;
 let error_list;
+let queries = 6;
 //answers valid queries
 function answer(query, response){
 	let answer = response;
 	let queryObj = querystring.parse(query);
 	let operation = queryObj.op;
 	error_list = [];
+	let appResponse = response;
 
 	//gets user info from TRN API and inserts / updates database with the information
 	if(operation === "update"){
@@ -57,7 +59,6 @@ function answer(query, response){
 		let users = [];
 		let platforms = [];
 		let data = [];
-		let appResponse = response;
 
 		//splits it further to separate the user and platforms into two separate arrays
 		for(let i = 0; i < names_platforms.length; ++i){
@@ -154,26 +155,34 @@ function answer(query, response){
 	else if(operation ==="modeData"){
 
 		console.log("Pulling data from all game mode tables");
+		let data = [];
+		pullModeData("SELECT * FROM overall_solo", "overall-solo");
+		pullModeData("SELECT * FROM overall_duo", "overall-duo");
+		pullModeData("SELECT * FROM overall_squad", "overall-squad");
+		pullModeData("SELECT * FROM season_solo", "season-solo");
+		pullModeData("SELECT * FROM season_duo", "season-duo");
+		pullModeData("SELECT * FROM season_squad", "season-squad");
+		
+		function pullModeData(cmdStr, table){
+			fortniteDB.all(cmdStr, function(err, rows){
+				if(err){
+				console.log(err+"\n");
+				sendCode(400, appResponse, "API error");
+			}
+			else{
+				rows.unshift({mode: table});
+				data.push(rows);
+				--queries;
 
-		let cmdStr = "SELECT * FROM overall_solo";
-		let cmdStr2 = "SELECT * FROM overall_duo";
-		let cmdStr3 = "SELECT * FROM overall_squad";
-		let cmdStr4 = "SELECT * FROM season_solo";
-		let cmdStr5 = "SELECT * FROM season_duo";
-		let cmdStr6 = "SELECT * FROM season_squad";
-
-		/*fortniteDB.all(cmdStr, function(err, rows){
-			if(err){
-			console.log(err+"\n");
-			sendCode(400, appResponse, "API error");
+				if(!queries){
+					console.log("query success!");
+					response.status(200);
+		            response.type("text/plain");
+		            response.send(data);
+		        }
+			}
+			});
 		}
-		else{
-			console.log("query success!");
-			response.status(200);
-            response.type("text/plain");
-            response.send(rows);
-		}
-		});*/
 	}
 }
 
