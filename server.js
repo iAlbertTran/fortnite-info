@@ -39,7 +39,7 @@ function sendCode(code, response, message){
 
 let queryCount;
 let error_list;
-let queries = 6;
+let queries;
 //answers valid queries
 function answer(query, response){
 	let answer = response;
@@ -153,7 +153,7 @@ function answer(query, response){
 	}
 
 	else if(operation ==="modeData"){
-
+		queries = 6;
 		console.log("Pulling data from all game mode tables");
 		let data = [];
 		pullModeData("SELECT * FROM overall_solo", "overall-solo");
@@ -174,7 +174,7 @@ function answer(query, response){
 					rows[i].Mode = table;
 					data.push(rows[i]);
 				}
-				//data.push(rows);
+				data.push(rows);
 				--queries;
 
 				if(!queries){
