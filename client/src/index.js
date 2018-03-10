@@ -6,86 +6,34 @@ class Form extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			users: [''],
-			platforms: ['pc'],
-			forms: [true],
+			user: '',
+			platform: 'pc',
 			titleData: false
 		};
 
 		this.handleUserChange = this.handleUserChange.bind(this);
-		this.handlePlatformChange = this.handlePlatformChange.bind(this);
-		this.addForm = this.addForm.bind(this);
+		this.changePlatform = this.changePlatform.bind(this);
 		this.callApi = this.callApi.bind(this);
-		this.removeForm = this.removeForm.bind(this);
 	}
 
 
 	//updates username info
 	handleUserChange(event){
-		let index = parseInt(event.target.className[0], 10);
-		let users = this.state.users;
-		users[index] = event.target.value;
+		let user = this.state.user;
+		user = event.target.value;
 
-		this.setState({users: users});
+		this.setState({user: user});
 	}
 
 
-	//updates platform info
-	handlePlatformChange(event){
-		let index = parseInt(event.target.className[0], 10);
-		let platforms = this.state.platforms;
-		platforms[index] = event.target.value;
-
-		this.setState({platforms: platforms});
-	}
-
-	//adds additional forms for more users
-	addForm(event){
-		event.preventDefault();
-		const formNumber = this.state.forms;
-		const users = this.state.users;
-		const platforms = this.state.platforms;
-		this.setState({
-			users: users.concat(['']),
-			platforms: platforms.concat(['pc']),
-			forms: formNumber.concat([true])
-		});
-
-	}
-
-	removeForm(event){
-		event.preventDefault();
-
-		const formNumber = this.state.forms;
-		const users = this.state.users;
-		const platforms = this.state.platforms;
-
-		if(users.length > 1){
-			users.pop();
-			platforms.pop();
-			formNumber.pop();
-
-			this.setState({
-				users: users,
-				platforms: platforms,
-				forms: formNumber
-			});
-		}
-
-
-	}
 
 	callApi = async (event) => {
   		event.preventDefault();
 
-  		let users = this.state.users;
-		let platforms = this.state.platforms;
+  		let user = this.state.user;
+		let platform = this.state.platform;
 
-		let url = "/query?op=update";
-
-		for(let i = 0; i < users.length; ++i){
-			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
-		}
+		let url = "/query?op=update&playerName=" + user + "&platform=" + platform;
 		const response = await fetch(url);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
@@ -95,48 +43,32 @@ class Form extends React.Component{
 
   	};
 
+  	changePlatform(event){
+  		this.setState({
+  			platform: event.target.value
+  		});
+  	}
 
 	render(){
 
-		let formNumber = this.state.forms;
-		const users = this.state.users;
-		const forms = formNumber.map((curr, index) => {
-			return(
-				<div key={index} className="userForm">
-					Name:
-					<input 
-						className={index} 
-						type='text' 
-						value={this.state.users[index]} 
-						onChange={this.handleUserChange} required />
-					Platform:
-					<select 
-						className={index} 
-						value={this.state.platforms[index]} 
-						onChange={this.handlePlatformChange} 
-						required
-					>
-						<option>PC</option>
-						<option>PSN</option>
-						<option>XBL</option>
-					</select>
-				</div>
-			);
-
-		});
-
-		const remove_button = (users.length > 1) ?
-			<button onClick={this.removeForm}>Remove Player</button> :
-			<button onClick={this.removeForm} disabled>Remove Player</button>
-
 		return(
-			<form id="playerForm" onSubmit={this.callApi}>
-				<label>
-					{forms}
-				</label>
-				<input type='submit' value='Update' />
-				<button onClick={this.addForm}>Add Player</button>
-				{remove_button}
+			<form id="playerForm" className="input-group input-group-sm" onSubmit={this.callApi}>
+				<div className="input-group-prepend btn-group">
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="pc">PC</button>
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="psn">PSN</button>
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="xbl">XBL</button>
+				</div>
+
+
+				<input 
+					className={"form-control"} 
+					type='text' 
+					value={this.state.user} 
+					onChange={this.handleUserChange} required 
+					placeholder="Enter Player Name"
+				/>
+
+				<button className="btn btn-sm btn-secondary input-group-append" type='submit' value='Update'>Update</button>
 			</form>
 		);
 	}
@@ -404,7 +336,7 @@ function StatsChart(props){
 
 	const stat_titles = stats[0].map((curr, index) => {
 		return(
-			<div className="stat-titles">
+			<div className="stat-title">
 				{curr[0]}
 			</div>
 		);
@@ -415,6 +347,7 @@ function StatsChart(props){
 			<div className="title">{mode_category}</div>
 			<div className="all-mode-data">
 				<div className="modes">
+					<div className="mode">Mode</div>
 					<div className="mode">Solo</div>
 					<div className="mode">Duo</div>
 					<div className="mode">Squad</div>
@@ -542,12 +475,14 @@ class Site extends React.Component{
 	render(){
 		return(
 			<div id="content">
-				<Form  
-					handleNewInfo={(newData) => this.handleNewInfo(newData)}
-				/>
-				<Checkboxes 
-					data={this.state.data}
-				/>
+				<nav className="navbar navbar-dark bg-dark">
+					<Form  
+						handleNewInfo={(newData) => this.handleNewInfo(newData)}
+					/>
+					<Checkboxes 
+						data={this.state.data}
+					/>
+				</nav>
 				<UserInfo 
 					data={this.state.data} 
 					modeData={this.state.modeData}

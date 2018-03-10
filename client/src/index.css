@@ -18,33 +18,12 @@ body {
 	grid-row: 1 / 2;
 	grid-column: 1 / 2;
 	display: grid;
-	grid-template-columns: auto;
-	justify-content: start;
-	width: auto;
+	grid-template-columns: max-content max-content max-content;
+	grid-auto-flow: column;
 }
 
-#playerForm label{
-	grid-row: 1 / 2;
-	grid-column: 1 / 4;
-
-	max-height: 100px;
-	overflow-y: scroll;
-}
-
-#playerForm input, #playerForm button{
-	margin: 2px;
-	height: 22px;
-}
-
-#playerForm .userForm{
-	margin: 1vh 0;
-
-	grid-column: 1 / 4;
-}
-
-#playerForm .userForm input, #playerForm .userForm select{
-	margin: 0 5px;
-	padding: 0;
+#playerForm input{
+	width: 100%;
 }
 
 #stat-checkbox{
@@ -209,7 +188,7 @@ body {
 	text-align: center;
 
 	width: 150px;
-	background-color: #E85A4F;
+	background-color: #8E8D8A;
 	padding: 5px 0;
 	border-bottom: #f9f9f9 1px solid;
 }
@@ -248,11 +227,12 @@ body {
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
 	text-align: center;
+	background-color: #D8C3A5;
 }
 
 .total-lifetime-stats .subcategory-title{
 	grid-row: 2 / 3;
-	background-color: #e3e3e3;
+	background-color: #E98074;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
 	text-align: center;
@@ -266,6 +246,8 @@ body {
 	text-align: center;
 
 	padding: 1vh 0;
+	border-top: #EAE7DC 2px solid;
+	border-bottom: #EAE7DC 2px solid;
 }
 
 .mode-stats .Overall{
@@ -285,7 +267,7 @@ body {
 .mode-stats .Season .title{
 	background-color: #8E8D8A;
 	text-align: center;
-	padding: 0.75vh 0;
+	padding: 1vh 0;
 }
 
 .mode-stats .Overall .all-mode-data,
@@ -293,17 +275,23 @@ body {
 	width: 98vw;
 	display: grid;
 	grid-auto-flow: column;
-	grid-template-columns: 75px auto;
+	grid-template-columns: max-content auto;
 }
 
 .mode-stats .Overall .all-mode-data .modes,
 .mode-stats .Season .all-mode-data .modes{
-	width: 75px;
+	width: max-content;
 	display:flex;
 	flex-direction: column;
 	justify-content: flex-end;
 	background-color: #E98074;
-	padding-left: 1vw;
+}
+
+.mode-stats .Overall .all-mode-data .mode,
+.mode-stats .Season .all-mode-data .mode{
+	width: 75px;
+	padding: 1vh 0 1vh 1vw;
+	border: #EAE7DC 1px solid;
 }
 
 
@@ -328,16 +316,25 @@ body {
 
 .mode-stats .Overall .stat-titles,
 .mode-stats .Overall .all-mode-data .chart .stats .mode-stats,
-.mode-stats .Overall .all-mode-data .chart .stats .mode-stats .individual-stat,
 .mode-stats .Season .stat-titles,
-.mode-stats .Season .all-mode-data .chart .stats .mode-stats,
-.mode-stats .Season .all-mode-data .chart .stats .mode-stats .individual-stat{
-	width: 125px;
+.mode-stats .Season .all-mode-data .chart .stats .mode-stats{
 	display: grid;
 	grid-auto-flow: column;
 	background-color: #D8C3A5;
-	padding: 0 1vw;
+}
+
+.mode-stats .Overall .stat-title,
+.mode-stats .Overall .all-mode-data .chart .stats .mode-stats .individual-stat,
+.mode-stats .Season .all-mode-data .chart .stats .mode-stats .individual-stat,
+.mode-stats .Season .stat-title{
+	width: 125px;
+	padding: 1vh 0 1vh 1vw;
 	border: #EAE7DC 1px solid;
+}
+
+.mode-stats .Overall .stat-titles,
+.mode-stats .Season .stat-titles{
+	background-color: #E98074;
 }
 
 .mode-stats .Overall .all-mode-data .chart .subtitle,

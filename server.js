@@ -53,86 +53,56 @@ function answer(query, response){
 		console.log('attemping to update user stats in database...');
 
 		//splits url to get usernames and their platform for each entry in array
-		let names_platforms = query.split("&"); 
-		names_platforms.shift();
+		let name_platform = query.split("&"); 
+		name_platform.shift();
 
-		let users = [];
-		let platforms = [];
-		let data = [];
+		let user = name_platform[0].split("=")[1];
+		let platform = name_platform[1].split("=")[1];
+		console.log(user);
+		console.log(platform);
 
-		//splits it further to separate the user and platforms into two separate arrays
-		for(let i = 0; i < names_platforms.length; ++i){
-			let name_platform = names_platforms[i].split(',');
-			users.push(name_platform[0].split("=")[1]);
-			platforms.push(name_platform[1].split("=")[1]);
-		}
+		const url = 'https://api.fortnitetracker.com/v1/profile/' + platform.toLowerCase() + "/" + user;
+		let options = {
+			url: url,
+			headers:{
+				'TRN-api-key' : '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7'
+			}
+		};
 
-		let remainingCalls = users.length;
-		let wait = 0;
+		//fortnite api only allows 1 api request per 2 seconds
+		request(options, function(error, response, body){
+			if(!error && response.statusCode === 200){
+				APIcallback(body, user, platform, appResponse);
+			}
+		});
 
-		//for each user submitted
-		for(let i = 0; i < users.length; ++i){
-			let user = users[i];
-			let platform = platforms[i];
-			const url = 'https://api.fortnitetracker.com/v1/profile/' + platform.toLowerCase() + "/" + user;
-			let options = {
-				url: url,
-				headers:{
-					'TRN-api-key' : '40e833dc-c903-4409-a3c0-d3f6d4cc0fa7'
-				}
-			};
-
-			//fortnite api only allows 1 api request per 2 seconds
-			setTimeout(function(){
-				request(options, function(error, response, body){
-					if(!error && response.statusCode === 200){
-						APIcallback(body, user, platform, appResponse);
-					}
-				});
-			}, wait);
-
-			wait += 2000;
-		}
 
 		//callback to resolve async problem with settimeout
 		function APIcallback(body, user, platform, appResponse){
 			let newData = JSON.parse(body);
 
+			//global variable. 7 updates to 7 tables per player. Shouldn't send a response until all updates are done;
+			queryCount = 7;
+
 			if(newData.error){
 				newData.error = user + " on platform " + platform + " not found";
 				newData.User = user;
 				newData.Platform = platform;
+				queryCount -= 7;
+				sendData(appResponse);
+			}
+			else{
+				let accountName = newData.epicUserHandle;
+				let platformName = newData.platformName;
+
+				let overall_stats = newData.lifeTimeStats;
+				let mode_stats = newData.stats;
+
+				updateOverallStats(accountName, platformName, overall_stats, response);
+				updateModeStats(accountName, platformName, mode_stats, response);
 			}
 
-			data.push(newData);
-
-			--remainingCalls;
-			//send data after all api calls are done
-			if(remainingCalls === 0){
-
-				//global variable. 7 updates to 7 tables per player. Shouldn't send a response until all updates are done;
-				queryCount = data.length * 7;
-				for(let i = 0; i < data.length; ++i){
-
-					//if api call to TRN can't find user...
-					if(data[i].error){
-						error_list.push(data[i]);
-						queryCount -= 7;
-						sendData(appResponse);
-						continue;
-					}
-
-					let accountName = data[i].epicUserHandle;
-					let platformName = data[i].platformName;
-
-					let overall_stats = data[i].lifeTimeStats;
-					let mode_stats = data[i].stats;
-
-					updateOverallStats(accountName, platformName, overall_stats, response);
-					updateModeStats(accountName, platformName, mode_stats, response);
-
-				}
-			}
+		
 		}
 	}
 
@@ -285,13 +255,8 @@ function sendData(response){
 			if(err){
 				console.log(err+"\n");
 				sendCode(400, response, "API error");
-
 			}
 			else{
-				let length = error_list.length;
-				while(length > 0){
-					row.push(error_list[--length]);
-				}
 				console.log('Data sent!');
 				response.send(row);
 			}
