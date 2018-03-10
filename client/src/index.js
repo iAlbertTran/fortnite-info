@@ -388,7 +388,7 @@ function StatsChart(props){
 
 		const stat_numbers = curr.map((curr, index) => {
 			return(
-				<div className="stat">
+				<div className="individual-stat">
 					{curr[1]}
 				</div>
 			);
@@ -397,7 +397,6 @@ function StatsChart(props){
 
 		return(
 			<div key={mode} className={"mode-stats " + mode_specific}>
-				<div className="subtitle">{mode_specific}</div>
 				{stat_numbers}
 			</div>
 		);
@@ -414,9 +413,16 @@ function StatsChart(props){
 	return(
 		<div className={mode_category}>
 			<div className="title">{mode_category}</div>
-			<div className="category-titles">{stat_titles}</div>
-			<div className="stats">
-				{chart}
+			<div className="all-mode-data">
+				<div className="modes">
+					<div className="mode">Solo</div>
+					<div className="mode">Duo</div>
+					<div className="mode">Squad</div>
+				</div>
+				<div className="chart">
+					<div className="stat-titles">{stat_titles}</div>
+					<div className="stats">{chart}</div>
+				</div>
 			</div>
 		</div>
 	);
