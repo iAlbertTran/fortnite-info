@@ -434,14 +434,14 @@ function ModeStats(props){
 
 		// parse the data into two categoris: overall stats and season stats
 		switch(curr.Mode){
-			case "overall-solo":
-			case "overall-duo":
-			case "overall-squad":
+			case "Overall-Solo":
+			case "Overall-Duo":
+			case "Overall-Squad":
 				stats_overall.push(temp);
 				break;
-			case "season-solo":
-			case "season-duo":
-			case "season-squad":
+			case "Season-Solo":
+			case "Season-Duo":
+			case "Season-Squad":
 				stats_season.push(temp);
 				break;
 			default: break;

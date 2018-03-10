@@ -156,12 +156,12 @@ function answer(query, response){
 		queries = 6;
 		console.log("Pulling data from all game mode tables");
 		let data = [];
-		pullModeData("SELECT * FROM overall_solo", "overall-solo");
-		pullModeData("SELECT * FROM overall_duo", "overall-duo");
-		pullModeData("SELECT * FROM overall_squad", "overall-squad");
-		pullModeData("SELECT * FROM season_solo", "season-solo");
-		pullModeData("SELECT * FROM season_duo", "season-duo");
-		pullModeData("SELECT * FROM season_squad", "season-squad");
+		pullModeData("SELECT * FROM overall_solo", "Overall-Solo");
+		pullModeData("SELECT * FROM overall_duo", "Overall-Duo");
+		pullModeData("SELECT * FROM overall_squad", "Overall-Squad");
+		pullModeData("SELECT * FROM season_solo", "Season-Solo");
+		pullModeData("SELECT * FROM season_duo", "Season-Duo");
+		pullModeData("SELECT * FROM season_squad", "Season-Squad");
 		
 		function pullModeData(cmdStr, table){
 			fortniteDB.all(cmdStr, function(err, rows){
