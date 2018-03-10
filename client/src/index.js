@@ -370,9 +370,91 @@ function OverallStats(props){
 }
 
 
+function StatsChart(props){
+	let stats = props.stats;
+	let mode = [];
+	let mode_category = '';
+	let mode_specific = '';
+
+	if(!stats.length)
+		return <div></div>;
+
+
+
+	const chart = stats.map((curr, index) => {
+		mode = curr.pop();
+		mode_category = mode[1].split("-")[0];
+		mode_specific = mode[1].split("-")[1];
+
+		const stat_numbers = curr.map((curr, index) => {
+			return(
+				<div className="stat">
+					{curr[1]}
+				</div>
+			);
+	
+		});
+
+		return(
+			<div key={mode} className={"mode-stats " + mode_specific}>
+				<div className="subtitle">{mode_specific}</div>
+				{stat_numbers}
+			</div>
+		);
+	});
+
+	const stat_titles = stats[0].map((curr, index) => {
+		return(
+			<div className="stat-titles">
+				{curr[0]}
+			</div>
+		);
+	});
+
+	return(
+		<div className={mode_category}>
+			<div className="title">{mode_category}</div>
+			<div className="category-titles">{stat_titles}</div>
+			<div className="stats">
+				{chart}
+			</div>
+		</div>
+	);
+}
+
+
 function ModeStats(props){
 	let modeData = props.modeData;
-	return(<div></div>);
+
+	let stats_season = [];
+	let stats_overall = [];
+
+	modeData.map((curr, index) => {
+		let temp = Object.entries(curr).splice(2,);
+
+		// parse the data into two categoris: overall stats and season stats
+		switch(curr.Mode){
+			case "overall-solo":
+			case "overall-duo":
+			case "overall-squad":
+				stats_overall.push(temp);
+				break;
+			case "season-solo":
+			case "season-duo":
+			case "season-squad":
+				stats_season.push(temp);
+				break;
+			default: break;
+		}
+		return temp;
+	});
+
+	return(
+		<div className="mode-stats">
+			<StatsChart stats={stats_overall} className="mode-stats"/>
+			<StatsChart stats={stats_season} className="mode-stats"/>	
+		</div>
+	);
 }
 
 function UserInfo(props){
