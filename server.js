@@ -88,6 +88,7 @@ function answer(query, response){
 				newData.error = user + " on platform " + platform + " not found";
 				newData.User = user;
 				newData.Platform = platform;
+				error_list = newData;
 				queryCount -= 7;
 				sendData(appResponse);
 			}
@@ -255,8 +256,11 @@ function sendData(response){
 			if(err){
 				console.log(err+"\n");
 				sendCode(400, response, "API error");
+
 			}
 			else{
+				if(error_list)
+					row.push(error_list);
 				console.log('Data sent!');
 				response.send(row);
 			}
