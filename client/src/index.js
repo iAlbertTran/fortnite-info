@@ -1,142 +1,78 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import $ from "jquery";
+
 class Form extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			users: [''],
-			platforms: ['pc'],
-			forms: [true],
+			user: '',
+			platform: 'pc',
 			titleData: false
 		};
 
 		this.handleUserChange = this.handleUserChange.bind(this);
-		this.handlePlatformChange = this.handlePlatformChange.bind(this);
-		this.addForm = this.addForm.bind(this);
+		this.changePlatform = this.changePlatform.bind(this);
 		this.callApi = this.callApi.bind(this);
-		this.removeForm = this.removeForm.bind(this);
 	}
 
 
 	//updates username info
 	handleUserChange(event){
-		let index = parseInt(event.target.className[0], 10);
-		let users = this.state.users;
-		users[index] = event.target.value;
+		let user = this.state.user;
+		user = event.target.value;
 
-		this.setState({users: users});
+		this.setState({user: user});
 	}
 
 
-	//updates platform info
-	handlePlatformChange(event){
-		let index = parseInt(event.target.className[0], 10);
-		let platforms = this.state.platforms;
-		platforms[index] = event.target.value;
-
-		this.setState({platforms: platforms});
-	}
-
-	//adds additional forms for more users
-	addForm(event){
-		event.preventDefault();
-		const formNumber = this.state.forms;
-		const users = this.state.users;
-		const platforms = this.state.platforms;
-		this.setState({
-			users: users.concat(['']),
-			platforms: platforms.concat(['pc']),
-			forms: formNumber.concat([true])
-		});
-
-	}
-
-	removeForm(event){
-		event.preventDefault();
-
-		const formNumber = this.state.forms;
-		const users = this.state.users;
-		const platforms = this.state.platforms;
-
-		if(users.length > 1){
-			users.pop();
-			platforms.pop();
-			formNumber.pop();
-
-			this.setState({
-				users: users,
-				platforms: platforms,
-				forms: formNumber
-			});
-		}
-
-
-	}
 
 	callApi = async (event) => {
   		event.preventDefault();
 
-  		let users = this.state.users;
-		let platforms = this.state.platforms;
+  		let user = this.state.user;
+		let platform = this.state.platform;
 
-		let url = "/query?op=update";
-
-		for(let i = 0; i < users.length; ++i){
-			url = url +  "&playerName=" + users[i] + ",platform=" + platforms[i];
-		}
+		let url = "/query?op=update&playerName=" + user + "&platform=" + platform;
 		const response = await fetch(url);
 		const body = await response.json();
 		if (response.status !== 200) throw Error(body.message);
 		else if (response.status === 200) {
 			this.props.handleNewInfo(body);
+			this.setState({
+				user: '',
+				platform: 'pc'
+			});
 		}
 
   	};
 
+  	changePlatform(event){
+  		this.setState({
+  			platform: event.target.value
+  		});
+  	}
 
 	render(){
 
-		let formNumber = this.state.forms;
-		const users = this.state.users;
-		const forms = formNumber.map((curr, index) => {
-			return(
-				<div key={index} className="userForm">
-					Name:
-					<input 
-						className={index} 
-						type='text' 
-						value={this.state.users[index]} 
-						onChange={this.handleUserChange} required />
-					Platform:
-					<select 
-						className={index} 
-						value={this.state.platforms[index]} 
-						onChange={this.handlePlatformChange} 
-						required
-					>
-						<option>PC</option>
-						<option>PSN</option>
-						<option>XBL</option>
-					</select>
-				</div>
-			);
-
-		});
-
-		const remove_button = (users.length > 1) ?
-			<button onClick={this.removeForm}>Remove Player</button> :
-			<button onClick={this.removeForm} disabled>Remove Player</button>
-
 		return(
-			<form id="playerForm" onSubmit={this.callApi}>
-				<label>
-					{forms}
-				</label>
-				<input type='submit' value='Update' />
-				<button onClick={this.addForm}>Add Player</button>
-				{remove_button}
+			<form id="playerForm" className="input-group input-group-sm mb-3" onSubmit={this.callApi}>
+				<div className="input-group-prepend btn-group">
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="pc">PC</button>
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="psn">PSN</button>
+					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="xbl">XBL</button>
+				</div>
+
+
+				<input 
+					className={"form-control"} 
+					type='text' 
+					value={this.state.user} 
+					onChange={this.handleUserChange} required 
+					placeholder="Enter Player Name"
+				/>
+
+				<button className="btn btn-sm btn-secondary input-group-append" type='submit' value='Update'>Update</button>
 			</form>
 		);
 	}
@@ -253,7 +189,7 @@ class OverallChecks extends React.Component{
 
 	render(){
 		return(
-			<div className="individual-check">
+			<div className="individual-check dropdown-item">
 				<div className="text">{this.props.text}</div>
 				<input 
 					className="lifetime" 
@@ -297,37 +233,59 @@ class Checkboxes extends React.Component{
 		});
 		return(
 			<div id="stat-checkbox">
-				<div id="users">
-					<div id="user-title">Users</div>
-					<div id="individual-list">
-						{user_list}
+
+				<div className="btn-group btn-group-sm">
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Users<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="users">
+							<div id="individual-list" className="dropdown-item">
+								{user_list}
+							</div>
+						</div>
 					</div>
 				</div>
-				<div id="overall">
-					<div className="title">Overall</div>
-					<div id="overall-wrapper">
-						<OverallChecks value="Wins" text="Wins" />
-						<OverallChecks value="Top 3" text="Top 3" />
-						<OverallChecks value="Top 3s" text="Top 3s" />
-						<OverallChecks value="Top 5s" text="Top 5s" />
-						<OverallChecks value="Top 6s" text="Top 6s" />
-						<OverallChecks value="Top 12s" text="Top 12s" />
-						<OverallChecks value="Top 25s" text="Top 25s" />
-						<OverallChecks value="Matches Played" text="# of Matches" />
-						<OverallChecks value="Win%" text="Win%" />
-						<OverallChecks value="Score" text="Score" />
-						<OverallChecks value="Kills" text="Kills" />
-						<OverallChecks value="K/d" text="K/D" />
-						<OverallChecks value="Kills Per Min" text="Kills/Min" />
-						<OverallChecks value="Time Played" text="Time Played" />
-						<OverallChecks value="Avg Survival Time" text="Time/Match" />
+
+				<div className="btn-group btn-group-sm">
+
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Overall<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="overall">
+								<OverallChecks value="Wins" text="Wins" />
+								<OverallChecks value="Top 3" text="Top 3" />
+								<OverallChecks value="Top 3s" text="Top 3s" />
+								<OverallChecks value="Top 5s" text="Top 5s" />
+								<OverallChecks value="Top 6s" text="Top 6s" />
+								<OverallChecks value="Top 12s" text="Top 12s" />
+								<OverallChecks value="Top 25s" text="Top 25s" />
+								<OverallChecks value="Matches Played" text="# of Matches" />
+								<OverallChecks value="Win%" text="Win%" />
+								<OverallChecks value="Score" text="Score" />
+								<OverallChecks value="Kills" text="Kills" />
+								<OverallChecks value="K/d" text="K/D" />
+								<OverallChecks value="Kills Per Min" text="Kills/Min" />
+								<OverallChecks value="Time Played" text="Time Played" />
+								<OverallChecks value="Avg Survival Time" text="Time/Match" />
+						</div>
 					</div>
 				</div>
-				<div id="mode-stats">
-					<CheckMode category="life" title="Lifetime Stats"/>
-					<CheckMode category="season" title="Season Stats"/>
-					<CheckSection />
+
+				<div className="btn-group btn-group-sm">
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Mode<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="mode-stats">
+							<CheckMode category="life" title="Lifetime Stats"/>
+							<CheckMode category="season" title="Season Stats"/>
+							<CheckSection />
+						</div>
+					</div>
 				</div>
+			
 			</div>
 		);
 	}
@@ -370,9 +328,98 @@ function OverallStats(props){
 }
 
 
+function StatsChart(props){
+	let stats = props.stats;
+	let mode = [];
+	let mode_category = '';
+	let mode_specific = '';
+
+	if(!stats.length)
+		return <div></div>;
+
+
+
+	const chart = stats.map((curr, index) => {
+		mode = curr.pop();
+		mode_category = mode[1].split("-")[0];
+		mode_specific = mode[1].split("-")[1];
+
+		const stat_numbers = curr.map((curr, index) => {
+			return(
+				<div className="individual-stat">
+					{curr[1]}
+				</div>
+			);
+	
+		});
+
+		return(
+			<div key={mode} className={"mode-stats " + mode_specific}>
+				{stat_numbers}
+			</div>
+		);
+	});
+
+	const stat_titles = stats[0].map((curr, index) => {
+		return(
+			<div className="stat-title">
+				{curr[0]}
+			</div>
+		);
+	});
+
+	return(
+		<div className={mode_category}>
+			<div className="title">{mode_category}</div>
+			<div className="all-mode-data">
+				<div className="modes">
+					<div className="mode">Mode</div>
+					<div className="mode">Solo</div>
+					<div className="mode">Duo</div>
+					<div className="mode">Squad</div>
+				</div>
+				<div className="chart">
+					<div className="stat-titles">{stat_titles}</div>
+					<div className="stats">{chart}</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+
 function ModeStats(props){
 	let modeData = props.modeData;
-	return(<div></div>);
+
+	let stats_season = [];
+	let stats_overall = [];
+
+	modeData.map((curr, index) => {
+		let temp = Object.entries(curr).splice(2,);
+
+		// parse the data into two categoris: overall stats and season stats
+		switch(curr.Mode){
+			case "Overall-Solo":
+			case "Overall-Duo":
+			case "Overall-Squad":
+				stats_overall.push(temp);
+				break;
+			case "Season-Solo":
+			case "Season-Duo":
+			case "Season-Squad":
+				stats_season.push(temp);
+				break;
+			default: break;
+		}
+		return temp;
+	});
+
+	return(
+		<div className="mode-stats">
+			<StatsChart stats={stats_overall} className="mode-stats"/>
+			<StatsChart stats={stats_season} className="mode-stats"/>	
+		</div>
+	);
 }
 
 function UserInfo(props){
@@ -454,12 +501,14 @@ class Site extends React.Component{
 	render(){
 		return(
 			<div id="content">
-				<Form  
-					handleNewInfo={(newData) => this.handleNewInfo(newData)}
-				/>
-				<Checkboxes 
-					data={this.state.data}
-				/>
+				<nav className="navbar navbar-dark bg-dark">
+					<Form  
+						handleNewInfo={(newData) => this.handleNewInfo(newData)}
+					/>
+					<Checkboxes 
+						data={this.state.data}
+					/>
+				</nav>
 				<UserInfo 
 					data={this.state.data} 
 					modeData={this.state.modeData}

@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  background-color: #f9f9f9;
+  background-color: #EAE7DC;
 }
 
 #root{
@@ -13,49 +13,31 @@ body {
 	display: grid;
 	grid-template-columns: max-content;
 }
-
-#playerForm{
-	grid-row: 1 / 2;
-	grid-column: 1 / 2;
+#content .navbar{
+	width: 98vw;
 	display: grid;
-	grid-template-columns: auto;
 	justify-content: start;
-	width: auto;
+}
+#playerForm{
+	display: grid;
+	grid-template-columns: max-content max-content max-content;
+	grid-auto-flow: column;
+	justify-content: start;
 }
 
-#playerForm label{
-	grid-row: 1 / 2;
-	grid-column: 1 / 4;
 
-	max-height: 100px;
-	overflow-y: scroll;
-}
-
-#playerForm input, #playerForm button{
-	margin: 2px;
-	height: 22px;
-}
-
-#playerForm .userForm{
-	margin: 1vh 0;
-
-	grid-column: 1 / 4;
-}
-
-#playerForm .userForm input, #playerForm .userForm select{
-	margin: 0 5px;
-	padding: 0;
+#playerForm input{
+	width: 100%;
 }
 
 #stat-checkbox{
-	grid-row: 1 / 2;
-	grid-column: 2 / 3;
 
 	display: grid;
-	justify-self: end;
 	grid-auto-flow: column;
 	grid-template-columns: max-content max-content max-content;
 	margin-right: 1vw;
+	justify-content: start;
+	width: 100%;
 }
 
 #stat-checkbox #overall{
@@ -117,9 +99,6 @@ body {
 	grid-column: 1 / 4;
 	grid-row: 2 / 3;
 
-	height: 100px;
-	overflow-y: scroll;
-
 	display: grid;
 }
 
@@ -127,7 +106,7 @@ body {
 	display: grid;
 	grid-auto-flow: column;
 	grid-template-columns: 100px;
-	padding: 5px 0;
+	padding: 1vw;
 }
 
 #stat-checkbox #checkboxes .individual-check .text{
@@ -209,7 +188,7 @@ body {
 	text-align: center;
 
 	width: 150px;
-	background-color: #89bdd3;
+	background-color: #8E8D8A;
 	padding: 5px 0;
 	border-bottom: #f9f9f9 1px solid;
 }
@@ -221,7 +200,7 @@ body {
 .lifetime-title{
 	grid-row: 2 / 3;
 
-	background-color: #89bdd3;
+	background-color: #E85A4F;
 	width: 98vw;
 	text-align: center;
 
@@ -248,12 +227,122 @@ body {
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
 	text-align: center;
+	background-color: #D8C3A5;
 }
 
 .total-lifetime-stats .subcategory-title{
 	grid-row: 2 / 3;
-	background-color: #e3e3e3;
+	background-color: #E98074;
 	padding: 1vh 0;
 	border: #f9f9f9 1px solid;
 	text-align: center;
 }
+
+.mode-title{
+	grid-row: 4 / 5;
+
+	background-color: #E85A4F;
+	width: 98vw;
+	text-align: center;
+
+	padding: 1vh 0;
+	border-top: #EAE7DC 2px solid;
+	border-bottom: #EAE7DC 2px solid;
+}
+
+.mode-stats .Overall{
+	grid-row: 1 / 2;
+}
+
+.mode-stats .Season{
+	grid-row: 2 / 3;
+}
+
+.mode-stats .Overall, .mode-stats .Season{
+	display: grid;
+	width: 98vw;
+}
+
+.mode-stats .Overall .title,
+.mode-stats .Season .title{
+	background-color: #8E8D8A;
+	text-align: center;
+	padding: 1vh 0;
+}
+
+.mode-stats .Overall .all-mode-data,
+.mode-stats .Season .all-mode-data{
+	width: 98vw;
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-columns: max-content auto;
+}
+
+.mode-stats .Overall .all-mode-data .modes,
+.mode-stats .Season .all-mode-data .modes{
+	width: max-content;
+	display:flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	background-color: #E98074;
+}
+
+.mode-stats .Overall .all-mode-data .mode,
+.mode-stats .Season .all-mode-data .mode{
+	width: 75px;
+	padding: 1vh 0 1vh 1vw;
+	border: #EAE7DC 1px solid;
+}
+
+
+
+.mode-stats .Overall .all-mode-data .chart,
+.mode-stats .Season .all-mode-data .chart{
+	display: grid;
+	overflow-x: scroll;
+}
+
+.mode-stats .Overall .all-mode-data .mode-titles,
+.mode-stats .Season .all-mode-data .mode-titles{
+	grid-column: 1 / 2;
+	grid-row: 1 / 2;
+}
+
+.mode-stats .Overall .category-titles,
+.mode-stats .Season .category-titles{
+	grid-template-columns: auto;
+}
+
+
+.mode-stats .Overall .stat-titles,
+.mode-stats .Overall .all-mode-data .chart .stats .mode-stats,
+.mode-stats .Season .stat-titles,
+.mode-stats .Season .all-mode-data .chart .stats .mode-stats{
+	display: grid;
+	grid-auto-flow: column;
+	background-color: #D8C3A5;
+}
+
+.mode-stats .Overall .stat-title,
+.mode-stats .Overall .all-mode-data .chart .stats .mode-stats .individual-stat,
+.mode-stats .Season .all-mode-data .chart .stats .mode-stats .individual-stat,
+.mode-stats .Season .stat-title{
+	width: 125px;
+	padding: 1vh 0 1vh 1vw;
+	border: #EAE7DC 1px solid;
+}
+
+.mode-stats .Overall .stat-titles,
+.mode-stats .Season .stat-titles{
+	background-color: #E98074;
+}
+
+.mode-stats .Overall .all-mode-data .chart .subtitle,
+.mode-stats .Season .all-mode-data .chart .subtitle{
+	width: 75px;
+}
+
+
+
+
+
