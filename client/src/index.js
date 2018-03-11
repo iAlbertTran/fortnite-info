@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import $ from "jquery";
+
 class Form extends React.Component{
 	constructor(props){
 		super(props);
@@ -39,6 +39,10 @@ class Form extends React.Component{
 		if (response.status !== 200) throw Error(body.message);
 		else if (response.status === 200) {
 			this.props.handleNewInfo(body);
+			this.setState({
+				user: '',
+				platform: 'pc'
+			});
 		}
 
   	};
@@ -52,7 +56,7 @@ class Form extends React.Component{
 	render(){
 
 		return(
-			<form id="playerForm" className="input-group input-group-sm" onSubmit={this.callApi}>
+			<form id="playerForm" className="input-group input-group-sm mb-3" onSubmit={this.callApi}>
 				<div className="input-group-prepend btn-group">
 					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="pc">PC</button>
 					<button type="button" className="btn btn-secondary" onClick={this.changePlatform} value="psn">PSN</button>
@@ -185,7 +189,7 @@ class OverallChecks extends React.Component{
 
 	render(){
 		return(
-			<div className="individual-check">
+			<div className="individual-check dropdown-item">
 				<div className="text">{this.props.text}</div>
 				<input 
 					className="lifetime" 
@@ -229,37 +233,59 @@ class Checkboxes extends React.Component{
 		});
 		return(
 			<div id="stat-checkbox">
-				<div id="users">
-					<div id="user-title">Users</div>
-					<div id="individual-list">
-						{user_list}
+
+				<div className="btn-group btn-group-sm">
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Users<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="users">
+							<div id="individual-list" className="dropdown-item">
+								{user_list}
+							</div>
+						</div>
 					</div>
 				</div>
-				<div id="overall">
-					<div className="title">Overall</div>
-					<div id="overall-wrapper">
-						<OverallChecks value="Wins" text="Wins" />
-						<OverallChecks value="Top 3" text="Top 3" />
-						<OverallChecks value="Top 3s" text="Top 3s" />
-						<OverallChecks value="Top 5s" text="Top 5s" />
-						<OverallChecks value="Top 6s" text="Top 6s" />
-						<OverallChecks value="Top 12s" text="Top 12s" />
-						<OverallChecks value="Top 25s" text="Top 25s" />
-						<OverallChecks value="Matches Played" text="# of Matches" />
-						<OverallChecks value="Win%" text="Win%" />
-						<OverallChecks value="Score" text="Score" />
-						<OverallChecks value="Kills" text="Kills" />
-						<OverallChecks value="K/d" text="K/D" />
-						<OverallChecks value="Kills Per Min" text="Kills/Min" />
-						<OverallChecks value="Time Played" text="Time Played" />
-						<OverallChecks value="Avg Survival Time" text="Time/Match" />
+
+				<div className="btn-group btn-group-sm">
+
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Overall<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="overall">
+								<OverallChecks value="Wins" text="Wins" />
+								<OverallChecks value="Top 3" text="Top 3" />
+								<OverallChecks value="Top 3s" text="Top 3s" />
+								<OverallChecks value="Top 5s" text="Top 5s" />
+								<OverallChecks value="Top 6s" text="Top 6s" />
+								<OverallChecks value="Top 12s" text="Top 12s" />
+								<OverallChecks value="Top 25s" text="Top 25s" />
+								<OverallChecks value="Matches Played" text="# of Matches" />
+								<OverallChecks value="Win%" text="Win%" />
+								<OverallChecks value="Score" text="Score" />
+								<OverallChecks value="Kills" text="Kills" />
+								<OverallChecks value="K/d" text="K/D" />
+								<OverallChecks value="Kills Per Min" text="Kills/Min" />
+								<OverallChecks value="Time Played" text="Time Played" />
+								<OverallChecks value="Avg Survival Time" text="Time/Match" />
+						</div>
 					</div>
 				</div>
-				<div id="mode-stats">
-					<CheckMode category="life" title="Lifetime Stats"/>
-					<CheckMode category="season" title="Season Stats"/>
-					<CheckSection />
+
+				<div className="btn-group btn-group-sm">
+					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Mode<span className="caret"></span>
+					</button>
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<div id="mode-stats">
+							<CheckMode category="life" title="Lifetime Stats"/>
+							<CheckMode category="season" title="Season Stats"/>
+							<CheckSection />
+						</div>
+					</div>
 				</div>
+			
 			</div>
 		);
 	}
