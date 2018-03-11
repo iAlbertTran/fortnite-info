@@ -13,28 +13,31 @@ body {
 	display: grid;
 	grid-template-columns: max-content;
 }
-
+#content .navbar{
+	width: 98vw;
+	display: grid;
+	justify-content: start;
+}
 #playerForm{
-	grid-row: 1 / 2;
-	grid-column: 1 / 2;
 	display: grid;
 	grid-template-columns: max-content max-content max-content;
 	grid-auto-flow: column;
+	justify-content: start;
 }
+
 
 #playerForm input{
 	width: 100%;
 }
 
 #stat-checkbox{
-	grid-row: 1 / 2;
-	grid-column: 2 / 3;
 
 	display: grid;
-	justify-self: end;
 	grid-auto-flow: column;
 	grid-template-columns: max-content max-content max-content;
 	margin-right: 1vw;
+	justify-content: start;
+	width: 100%;
 }
 
 #stat-checkbox #overall{
@@ -96,9 +99,6 @@ body {
 	grid-column: 1 / 4;
 	grid-row: 2 / 3;
 
-	height: 100px;
-	overflow-y: scroll;
-
 	display: grid;
 }
 
@@ -106,7 +106,7 @@ body {
 	display: grid;
 	grid-auto-flow: column;
 	grid-template-columns: 100px;
-	padding: 5px 0;
+	padding: 1vw;
 }
 
 #stat-checkbox #checkboxes .individual-check .text{
