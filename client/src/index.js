@@ -331,50 +331,58 @@ function OverallStats(props){
 			data_titles.push(curr[0]);
 			return curr[1];
 		});
-		console.log(data_overall[8]);
+		let percentage = data_titles[0] + " (" + Math.round(data_overall[0] / data_overall[7] * 10000)/100 + "%)";
+		let percentage1 = data_titles[1] + " (" + Math.round(data_overall[1] / data_overall[7] * 10000)/100 + "%)";
+		let percentage2 =  "Top 5s/6s (" + Math.round((data_overall[2] + data_overall[3]) / data_overall[7] * 10000)/100 + "%)";
+		let percentage3 = data_titles[4] + " (" + Math.round(data_overall[4] / data_overall[7] * 10000)/100 + "%)";
+		let percentage4 = "Top 12s/25s (" + Math.round((data_overall[5] + data_overall[6]) / data_overall[7] * 10000)/100 + "%)";
+		let percentage5 = "Did not place (" + Math.round((data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]) / data_overall[7] * 10000)/100 + "%)";
+
+
 		let chart_data = [
 			{
 				value: data_overall[0],
 				color: '#71aef2',
-				highlight: 'black',
-				label: data_titles[0] 
+				highlight: '#4d8ace',
+				label: percentage
 			},
 			{
 				value: data_overall[1],
 				color: '#8ff243',
-				highlight: 'black',
-				label: data_titles[1]
+				highlight: '#6bce1f',
+				label: percentage1
 			},
 			{
 				value: data_overall[2] + data_overall[3],
 				color: '#6B5B95',
-				highlight: 'black',
-				label: 'Top 5s/6s'
+				highlight: '#473771',
+				label: percentage2
 			},
 			{
 				value: data_overall[4],
 				color: '#ffc100',
-				highlight: 'black',
-				label: data_titles[4] 
+				highlight: '#db9d00',
+				label: percentage3
 			},
 			{
-				value: data_overall[5] + data_overall[5],
+				value: data_overall[5] + data_overall[6],
 				color: '#00A591',
-				highlight: 'black',
-				label: "Top 12s/25s"
+				highlight: '#00816d',
+				label: percentage4
 			},
 			{
 				value: data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0],
 				color: '#ea5645',
-				highlight: 'black',
-				label: "Did not place"
+				highlight: '#c63221',
+				label: percentage5
 			}
 		]
 
 		let chartOptions = {
 			legend: {
 				display: true
-			}
+			},
+			animationSteps: 150
 		}
 		return(
 			<div className="total-lifetime-stats category">
