@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import logo from './img/logo.png';
+
+let DoughnutChart = require("react-chartjs").Doughnut;
 
 class Form extends React.Component{
 	constructor(props){
@@ -202,6 +205,19 @@ class OverallChecks extends React.Component{
 		);
 	}
 }
+
+function Dropdown(props){
+	return(
+		<div className={props.class + " btn-group btn-group-sm dropleft"}>
+			<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{props.buttonText}<span className="caret"></span>
+			</button>
+			<div className="dropdown-menu dropdown-menu-right">
+					{props.content}
+			</div>
+		</div>
+	);
+}
 class Checkboxes extends React.Component{
 
 	handleChange(event){
@@ -231,60 +247,62 @@ class Checkboxes extends React.Component{
 				</div>
 			);
 		});
+
+		let user_div = (
+			<div id="users">
+				<div id="individual-list" className="dropdown-item">{user_list}</div>
+			</div>
+		);
+
+		let overall_div = (
+			<div id="overall" className="dropdown-item">
+				<OverallChecks value="Wins" text="Wins" />
+				<OverallChecks value="Top 3" text="Top 3" />
+				<OverallChecks value="Top 3s" text="Top 3s" />
+				<OverallChecks value="Top 5s" text="Top 5s" />
+				<OverallChecks value="Top 6s" text="Top 6s" />
+				<OverallChecks value="Top 12s" text="Top 12s" />
+				<OverallChecks value="Top 25s" text="Top 25s" />
+				<OverallChecks value="Matches Played" text="# of Matches" />
+				<OverallChecks value="Win%" text="Win%" />
+				<OverallChecks value="Score" text="Score" />
+				<OverallChecks value="Kills" text="Kills" />
+				<OverallChecks value="K/d" text="K/D" />
+				<OverallChecks value="Kills Per Min" text="Kills/Min" />
+				<OverallChecks value="Time Played" text="Time Played" />
+				<OverallChecks value="Avg Survival Time" text="Time/Match" />
+			</div>
+
+		);
+
+		let mode_stats_div = (
+			<div id="mode-stats" className="dropdown-item">
+				<CheckMode category="life" title="Lifetime Stats"/>
+				<CheckMode category="season" title="Season Stats"/>
+				<CheckSection />
+			</div>
+		);
+
 		return(
 			<div id="stat-checkbox">
 
-				<div className="btn-group btn-group-sm">
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Users<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="users">
-							<div id="individual-list" className="dropdown-item">
-								{user_list}
-							</div>
-						</div>
-					</div>
-				</div>
+				<Dropdown 
+					buttonText="User"
+					content={user_div}
+					class="user-wrapper"
+				/>
+	
+				<Dropdown 
+					buttonText="Overall"
+					content={overall_div}
+					class="overall-wrapper"
+				/>
 
-				<div className="btn-group btn-group-sm">
-
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					    Overall<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="overall">
-								<OverallChecks value="Wins" text="Wins" />
-								<OverallChecks value="Top 3" text="Top 3" />
-								<OverallChecks value="Top 3s" text="Top 3s" />
-								<OverallChecks value="Top 5s" text="Top 5s" />
-								<OverallChecks value="Top 6s" text="Top 6s" />
-								<OverallChecks value="Top 12s" text="Top 12s" />
-								<OverallChecks value="Top 25s" text="Top 25s" />
-								<OverallChecks value="Matches Played" text="# of Matches" />
-								<OverallChecks value="Win%" text="Win%" />
-								<OverallChecks value="Score" text="Score" />
-								<OverallChecks value="Kills" text="Kills" />
-								<OverallChecks value="K/d" text="K/D" />
-								<OverallChecks value="Kills Per Min" text="Kills/Min" />
-								<OverallChecks value="Time Played" text="Time Played" />
-								<OverallChecks value="Avg Survival Time" text="Time/Match" />
-						</div>
-					</div>
-				</div>
-
-				<div className="btn-group btn-group-sm">
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Mode<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="mode-stats">
-							<CheckMode category="life" title="Lifetime Stats"/>
-							<CheckMode category="season" title="Season Stats"/>
-							<CheckSection />
-						</div>
-					</div>
-				</div>
+				<Dropdown 
+					buttonText="Mode"
+					content={mode_stats_div}
+					class="mode-wrapper"
+				/>
 			
 			</div>
 		);
@@ -304,25 +322,71 @@ function UserID(props){
 function OverallStats(props){
 
 	const data = props.data;
-	let data_overall;
+	let data_titles = [];
 
+	
 	//get the title for subcategories of each mode and lifetime stats
 	if(data){
-		data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
-			return(
-				<div key={curr[0]} className={curr[0] + " overall-stats"}>
-					<div className="subcategory-title">{curr[0]}</div>
-					<div className="subcategory-stat">{curr[1]}</div>
-				</div>
-			);
+		let data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
+			data_titles.push(curr[0]);
+			return curr[1];
 		});
+		console.log(data_overall[8]);
+		let chart_data = [
+			{
+				value: data_overall[0],
+				color: '#71aef2',
+				highlight: 'black',
+				label: data_titles[0] 
+			},
+			{
+				value: data_overall[1],
+				color: '#8ff243',
+				highlight: 'black',
+				label: data_titles[1]
+			},
+			{
+				value: data_overall[2] + data_overall[3],
+				color: '#6B5B95',
+				highlight: 'black',
+				label: 'Top 5s/6s'
+			},
+			{
+				value: data_overall[4],
+				color: '#ffc100',
+				highlight: 'black',
+				label: data_titles[4] 
+			},
+			{
+				value: data_overall[5] + data_overall[5],
+				color: '#00A591',
+				highlight: 'black',
+				label: "Top 12s/25s"
+			},
+			{
+				value: data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0],
+				color: '#ea5645',
+				highlight: 'black',
+				label: "Did not place"
+			}
+		]
+
+		let chartOptions = {
+			legend: {
+				display: true
+			}
+		}
+		return(
+			<div className="total-lifetime-stats category">
+				<DoughnutChart data={chart_data} options={chartOptions}/>
+			</div>
+		);
 	}
 
 
 
 	return(
 		<div className="total-lifetime-stats category">
-			{data_overall}
 		</div>
 	);
 }
@@ -346,7 +410,7 @@ function StatsChart(props){
 
 		const stat_numbers = curr.map((curr, index) => {
 			return(
-				<div className="individual-stat">
+				<div key={index} className="individual-stat">
 					{curr[1]}
 				</div>
 			);
@@ -354,7 +418,7 @@ function StatsChart(props){
 		});
 
 		return(
-			<div key={mode} className={"mode-stats " + mode_specific}>
+			<div key={mode_specific} className={"mode-stats " + mode_specific}>
 				{stat_numbers}
 			</div>
 		);
@@ -362,7 +426,7 @@ function StatsChart(props){
 
 	const stat_titles = stats[0].map((curr, index) => {
 		return(
-			<div className="stat-title">
+			<div key={curr[0]} className="stat-title">
 				{curr[0]}
 			</div>
 		);
@@ -502,6 +566,7 @@ class Site extends React.Component{
 		return(
 			<div id="content">
 				<nav className="navbar navbar-dark bg-dark">
+					<img id="logo" alt="fortnite logo" src={logo} />
 					<Form  
 						handleNewInfo={(newData) => this.handleNewInfo(newData)}
 					/>
