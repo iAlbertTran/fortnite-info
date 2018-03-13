@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import logo from './img/logo.png';
+import {Doughnut} from 'react-chartjs-2';
 
 class Form extends React.Component{
 	constructor(props){
@@ -189,7 +191,7 @@ class OverallChecks extends React.Component{
 
 	render(){
 		return(
-			<div className="individual-check dropdown-item">
+			<div className="individual-check">
 				<div className="text">{this.props.text}</div>
 				<input 
 					className="lifetime" 
@@ -202,18 +204,20 @@ class OverallChecks extends React.Component{
 		);
 	}
 }
+
+function Dropdown(props){
+	return(
+		<div className={props.class + " btn-group btn-group-sm dropleft"}>
+			<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{props.buttonText}<span className="caret"></span>
+			</button>
+			<div className="dropdown-menu dropdown-menu-right">
+					{props.content}
+			</div>
+		</div>
+	);
+}
 class Checkboxes extends React.Component{
-
-	handleChange(event){
-		let user = document.getElementById(event.target.value);
-
-		if(user.style.display === 'grid' || !user.style.display){
-			user.style.display = 'none';
-		}
-		else{
-			user.style.display = 'grid';
-		}
-	}
 
 	render(){
 		let data = this.props.data;
@@ -231,100 +235,155 @@ class Checkboxes extends React.Component{
 				</div>
 			);
 		});
+
+		let overall_div = (
+			<div id="overall" className="dropdown-item">
+				<OverallChecks value="Wins" text="Wins" />
+				<OverallChecks value="Top 3" text="Top 3" />
+				<OverallChecks value="Top 3s" text="Top 3s" />
+				<OverallChecks value="Top 5s" text="Top 5s" />
+				<OverallChecks value="Top 6s" text="Top 6s" />
+				<OverallChecks value="Top 12s" text="Top 12s" />
+				<OverallChecks value="Top 25s" text="Top 25s" />
+				<OverallChecks value="Matches Played" text="# of Matches" />
+				<OverallChecks value="Win%" text="Win%" />
+				<OverallChecks value="Score" text="Score" />
+				<OverallChecks value="Kills" text="Kills" />
+				<OverallChecks value="K/d" text="K/D" />
+				<OverallChecks value="Kills Per Min" text="Kills/Min" />
+				<OverallChecks value="Time Played" text="Time Played" />
+				<OverallChecks value="Avg Survival Time" text="Time/Match" />
+			</div>
+
+		);
+
+		let mode_stats_div = (
+			<div id="mode-stats" className="dropdown-item">
+				<CheckMode category="life" title="Lifetime Stats"/>
+				<CheckMode category="season" title="Season Stats"/>
+				<CheckSection />
+			</div>
+		);
+
 		return(
 			<div id="stat-checkbox">
 
-				<div className="btn-group btn-group-sm">
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Users<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="users">
-							<div id="individual-list" className="dropdown-item">
-								{user_list}
-							</div>
-						</div>
-					</div>
-				</div>
+				<Dropdown 
+					buttonText="Overall"
+					content={overall_div}
+					class="overall-wrapper"
+				/>
 
-				<div className="btn-group btn-group-sm">
-
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					    Overall<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="overall">
-								<OverallChecks value="Wins" text="Wins" />
-								<OverallChecks value="Top 3" text="Top 3" />
-								<OverallChecks value="Top 3s" text="Top 3s" />
-								<OverallChecks value="Top 5s" text="Top 5s" />
-								<OverallChecks value="Top 6s" text="Top 6s" />
-								<OverallChecks value="Top 12s" text="Top 12s" />
-								<OverallChecks value="Top 25s" text="Top 25s" />
-								<OverallChecks value="Matches Played" text="# of Matches" />
-								<OverallChecks value="Win%" text="Win%" />
-								<OverallChecks value="Score" text="Score" />
-								<OverallChecks value="Kills" text="Kills" />
-								<OverallChecks value="K/d" text="K/D" />
-								<OverallChecks value="Kills Per Min" text="Kills/Min" />
-								<OverallChecks value="Time Played" text="Time Played" />
-								<OverallChecks value="Avg Survival Time" text="Time/Match" />
-						</div>
-					</div>
-				</div>
-
-				<div className="btn-group btn-group-sm">
-					<button type="button" className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Mode<span className="caret"></span>
-					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<div id="mode-stats">
-							<CheckMode category="life" title="Lifetime Stats"/>
-							<CheckMode category="season" title="Season Stats"/>
-							<CheckSection />
-						</div>
-					</div>
-				</div>
+				<Dropdown 
+					buttonText="Mode"
+					content={mode_stats_div}
+					class="mode-wrapper"
+				/>
 			
 			</div>
 		);
 	}
 }
 
-function UserID(props){
+class UserID extends React.Component{
 
-	return(
-		<div className="userID" key={props.user} id={props.user}>
-			<div>{props.user} </div>
-			<div className="userPlatform">{props.platform}</div> 
-		</div>
-	);
+	render(){
+		return(
+			<button key={this.props.user} id={this.props.user} className="user" onClick={this.props.handleChange}>
+				<div>{this.props.user} </div>
+				<div className="userPlatform">{this.props.platform}</div> 
+			</button>
+		);
+	}
 }
 
-function OverallStats(props){
+class OverallStats extends React.Component{
+	render(){
+		const data = this.props.data;
+		let data_titles = [];
 
-	const data = props.data;
-	let data_overall;
+		
+		//get the title for subcategories of each mode and lifetime stats
+		if(data){
+			let data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
+				data_titles.push(curr[0]);
+				return curr[1];
+			});
 
-	//get the title for subcategories of each mode and lifetime stats
-	if(data){
-		data_overall = Object.entries(data).splice(2,).map((curr,index) =>{
+			//TRN api: Top 3 = top 10, Top 3 and Top 25s are for solos,
+			//Top 5s and Top 12s are for duos,
+			// Finally, Top 3s and Top 6s are for squad (notice Top 3 has no s for solo in JSON)
+			let wins_overall = data_titles[0]  + " (All Modes - " + Math.round(data_overall[0] / data_overall[7] * 10000)/100 + "%)";
+			let solo = "Top 10/25 (Solo - " + Math.round((data_overall[1] + data_overall[6]) / data_overall[7] * 10000)/100 + "%)";
+			let duo =  "Top 5/12 (Duo - " + Math.round((data_overall[3] + data_overall[5]) / data_overall[7] * 10000)/100 + "%)";
+			let squad = "Top 3/6 (Squad - " + Math.round((data_overall[2] + data_overall[4]) / data_overall[7] * 10000)/100 + "%)";
+			let matches = "Did not place (" + Math.round((data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]) / data_overall[7] * 10000)/100 + "%)";
+
+
+			const chart_data = {
+				labels: [
+					wins_overall,
+					solo,
+					duo,
+					squad,
+					matches
+				],
+				datasets: [{
+					data: [
+						data_overall[0],
+						data_overall[1] + data_overall[6],
+						data_overall[3] + data_overall[5],
+						data_overall[2] + data_overall[4],
+						data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]
+					],
+					backgroundColor: [
+						'#71aef2',
+						'#8ff243',
+						'#ffc100',
+						'#6B5B95',
+						'#ea5645'
+					],
+					hoverBackgroundColor: [
+						'#4d8ace',
+						'#6bce1f',
+						'#db9d00',
+						'#473771',
+						'#c63221'
+					]
+				}]
+			};
+
+			let chartOptions = {
+				maintainAspectRatio: false,
+				legend: {
+					position: 'bottom'
+				},
+				title: {
+					display: true,
+					text: "Placement History"
+				}
+			}
 			return(
-				<div key={curr[0]} className={curr[0] + " overall-stats"}>
-					<div className="subcategory-title">{curr[0]}</div>
-					<div className="subcategory-stat">{curr[1]}</div>
+				<div className="total-lifetime-stats category">
+					<Doughnut
+						ref='chart'
+						data={chart_data} 
+						options={chartOptions}
+						width={300}
+						height={300}
+						redraw={this.props.shouldRedraw}
+					/>
 				</div>
 			);
-		});
+		}
+
+
+
+		return(
+			<div className="total-lifetime-stats category">
+			</div>
+		);
 	}
-
-
-
-	return(
-		<div className="total-lifetime-stats category">
-			{data_overall}
-		</div>
-	);
 }
 
 
@@ -346,7 +405,7 @@ function StatsChart(props){
 
 		const stat_numbers = curr.map((curr, index) => {
 			return(
-				<div className="individual-stat">
+				<div key={index} className="individual-stat">
 					{curr[1]}
 				</div>
 			);
@@ -354,7 +413,7 @@ function StatsChart(props){
 		});
 
 		return(
-			<div key={mode} className={"mode-stats " + mode_specific}>
+			<div key={mode_specific} className={"mode-stats " + mode_specific}>
 				{stat_numbers}
 			</div>
 		);
@@ -362,7 +421,7 @@ function StatsChart(props){
 
 	const stat_titles = stats[0].map((curr, index) => {
 		return(
-			<div className="stat-title">
+			<div key={curr[0]} className="stat-title">
 				{curr[0]}
 			</div>
 		);
@@ -390,30 +449,36 @@ function StatsChart(props){
 
 function ModeStats(props){
 	let modeData = props.modeData;
-
 	let stats_season = [];
 	let stats_overall = [];
 
 	modeData.map((curr, index) => {
 		let temp = Object.entries(curr).splice(2,);
-
 		// parse the data into two categoris: overall stats and season stats
 		switch(curr.Mode){
 			case "Overall-Solo":
+				stats_overall[0] = temp;
+				break;
 			case "Overall-Duo":
+				stats_overall[1] = temp;
+				break;
 			case "Overall-Squad":
-				stats_overall.push(temp);
+				stats_overall[2] = temp;
 				break;
 			case "Season-Solo":
+				stats_season[0] = temp;
+				break;
 			case "Season-Duo":
+				stats_season[1] = temp;
+				break;
 			case "Season-Squad":
-				stats_season.push(temp);
+				stats_season[2] = temp;
 				break;
 			default: break;
 		}
-		return temp;
 	});
 
+	//console.log(stats_season);
 	return(
 		<div className="mode-stats">
 			<StatsChart stats={stats_overall} className="mode-stats"/>
@@ -435,7 +500,6 @@ function UserInfo(props){
 			);
 		}
 		const user = curr.User;
-		const platform = curr.Platform;
 		let relevant_data = [];
 		for(let i = 0; i < modeData.length; ++i){
 			if(modeData[i].User === curr.User){
@@ -444,14 +508,8 @@ function UserInfo(props){
 		}
 
 		return(
-			<div key={user} className="userInfo" id={user}>
-				<UserID 
-					user={user} 
-					platform={platform} 
-					handleCheck={props.handleCheck}
-				/>
-				<div className="lifetime-title">Overall Statistics</div>
-				<OverallStats data={curr} />
+			<div key={user} className="userInfo" id={user + "-info"}>
+				<OverallStats data={curr} shouldRedraw={props.shouldRedraw}/>
 				<div className="mode-title">Game Mode Statistics</div>
 				<ModeStats modeData={relevant_data} />
 			</div>
@@ -466,14 +524,29 @@ class Site extends React.Component{
 		this.state = {
 			data: [],
 			response: '',
-			modeData: []
+			modeData: [],
+			shouldRedraw: false
 		}
+
+		this.handleChange = this.handleChange.bind(this);
 	}
 
 	//completely rewrite data with the new set of data
 	handleNewInfo(newData){
 		this.setState({
 			data: newData
+		});
+	}
+
+	//displays the respective user's info
+	handleChange(event){
+
+		highlightUserButton(event);
+		displayUserInfo(event);
+
+		//used so that the chart animations are done again when the info is displayed
+		this.setState({
+			shouldRedraw: true
 		});
 	}
 
@@ -499,9 +572,25 @@ class Site extends React.Component{
 	}
 
 	render(){
+
+		let data = this.state.data;
+		const name_platform = data.map((curr, index) => {
+			const user = curr.User;
+			const platform = curr.Platform;
+
+			return(
+				<UserID 
+					user={user} 
+					platform={platform} 
+					handleChange={this.handleChange}
+				/>
+			);
+		});
+
 		return(
 			<div id="content">
-				<nav className="navbar navbar-dark bg-dark">
+				<nav className="navbar sticky-top">
+					<img id="logo" alt="fortnite logo" src={logo} />
 					<Form  
 						handleNewInfo={(newData) => this.handleNewInfo(newData)}
 					/>
@@ -509,9 +598,13 @@ class Site extends React.Component{
 						data={this.state.data}
 					/>
 				</nav>
+				<div className="userID">
+					{name_platform}
+				</div>
 				<UserInfo 
 					data={this.state.data} 
 					modeData={this.state.modeData}
+					shouldRedraw={this.state.shouldRedraw}
 				/>
 			</div>
 		);
@@ -519,4 +612,45 @@ class Site extends React.Component{
 }
 
 ReactDOM.render(<Site />, document.getElementById('root'));
+
+
+
+//highlights the user button that was clicked
+function highlightUserButton(event){
+	const userButton = document.getElementsByClassName("user");
+
+	for(let i = 0; i < userButton.length; ++i){
+		userButton[i].style.backgroundColor = "#1d1e21";
+		userButton[i].style.color = "#f9f9f9";
+	}
+
+	const button = (event.target.id) ? 
+		document.getElementById(event.target.id) :
+		document.getElementById(event.target.parentElement.id);
+
+	button.style.backgroundColor = "#f9f9f9";
+	button.style.color = "#1d1e21";
+}
+
+
+//displays corresponding user's info
+function displayUserInfo(event){
+	const users = document.getElementsByClassName("userInfo");
+
+	for(let i = 0; i < users.length; ++i){
+		users[i].style.display = "none";
+	}
+
+	//funky button reaction on click where it sometimes targets inner divs vs. wrapper
+	const user = (event.target.id) ? 
+		document.getElementById(event.target.id + "-info") :
+		document.getElementById(event.target.parentElement.id + "-info");
+	
+	if(user.style.display === 'grid'){
+		user.style.display = 'none';
+	}
+	else{
+		user.style.display = 'grid';
+	}
+}
 
