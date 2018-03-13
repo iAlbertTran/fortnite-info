@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import logo from './img/logo.png';
-
-let DoughnutChart = require("react-chartjs").Doughnut;
+import {Doughnut} from 'react-chartjs-2';
 
 class Form extends React.Component{
 	constructor(props){
@@ -192,7 +191,7 @@ class OverallChecks extends React.Component{
 
 	render(){
 		return(
-			<div className="individual-check dropdown-item">
+			<div className="individual-check">
 				<div className="text">{this.props.text}</div>
 				<input 
 					className="lifetime" 
@@ -331,62 +330,68 @@ function OverallStats(props){
 			data_titles.push(curr[0]);
 			return curr[1];
 		});
-		let percentage = data_titles[0] + " (" + Math.round(data_overall[0] / data_overall[7] * 10000)/100 + "%)";
-		let percentage1 = data_titles[1] + " (" + Math.round(data_overall[1] / data_overall[7] * 10000)/100 + "%)";
-		let percentage2 =  "Top 5s/6s (" + Math.round((data_overall[2] + data_overall[3]) / data_overall[7] * 10000)/100 + "%)";
-		let percentage3 = data_titles[4] + " (" + Math.round(data_overall[4] / data_overall[7] * 10000)/100 + "%)";
-		let percentage4 = "Top 12s/25s (" + Math.round((data_overall[5] + data_overall[6]) / data_overall[7] * 10000)/100 + "%)";
-		let percentage5 = "Did not place (" + Math.round((data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]) / data_overall[7] * 10000)/100 + "%)";
+
+		//TRN api: Top 3 = top 10, Top 3 and Top 25s are for solos,
+		//Top 5s and Top 12s are for duos,
+		// Finally, Top 3s and Top 6s are for squad (notice Top 3 has no s for solo in JSON)
+		let wins_overall = data_titles[0]  + " in all modes (" + Math.round(data_overall[0] / data_overall[7] * 10000)/100 + "%)";
+		let solo = "Top 10/25 in Solo (" + Math.round((data_overall[1] + data_overall[6]) / data_overall[7] * 10000)/100 + "%)";
+		let duo =  "Top 5/12 in Duo (" + Math.round((data_overall[3] + data_overall[5]) / data_overall[7] * 10000)/100 + "%)";
+		let squad = "Top 3/6 in Squad (" + Math.round((data_overall[2] + data_overall[4]) / data_overall[7] * 10000)/100 + "%)";
+		let matches = "Did not place (" + Math.round((data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]) / data_overall[7] * 10000)/100 + "%)";
 
 
-		let chart_data = [
-			{
-				value: data_overall[0],
-				color: '#71aef2',
-				highlight: '#4d8ace',
-				label: percentage
-			},
-			{
-				value: data_overall[1],
-				color: '#8ff243',
-				highlight: '#6bce1f',
-				label: percentage1
-			},
-			{
-				value: data_overall[2] + data_overall[3],
-				color: '#6B5B95',
-				highlight: '#473771',
-				label: percentage2
-			},
-			{
-				value: data_overall[4],
-				color: '#ffc100',
-				highlight: '#db9d00',
-				label: percentage3
-			},
-			{
-				value: data_overall[5] + data_overall[6],
-				color: '#00A591',
-				highlight: '#00816d',
-				label: percentage4
-			},
-			{
-				value: data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0],
-				color: '#ea5645',
-				highlight: '#c63221',
-				label: percentage5
-			}
-		]
+		const chart_data = {
+			labels: [
+				wins_overall,
+				solo,
+				duo,
+				squad,
+				matches
+			],
+			datasets: [{
+				data: [
+					data_overall[0],
+					data_overall[1] + data_overall[6],
+					data_overall[3] + data_overall[5],
+					data_overall[2] + data_overall[4],
+					data_overall[7] - data_overall[6] - data_overall[5] - data_overall[4] - data_overall[3] - data_overall[2] - data_overall[1] - data_overall[0]
+				],
+				backgroundColor: [
+					'#71aef2',
+					'#8ff243',
+					'#ffc100',
+					'#6B5B95',
+					'#ea5645'
+				],
+				hoverBackgroundColor: [
+					'#4d8ace',
+					'#6bce1f',
+					'#db9d00',
+					'#473771',
+					'#c63221'
+				]
+			}]
+		};
 
 		let chartOptions = {
+			maintainAspectRatio: false,
 			legend: {
-				display: true
+				position: 'bottom'
 			},
-			animationSteps: 150
+			title: {
+				display: true,
+				text: "Placement History"
+			}
 		}
 		return(
 			<div className="total-lifetime-stats category">
-				<DoughnutChart data={chart_data} options={chartOptions}/>
+				<Doughnut 
+					data={chart_data} 
+					options={chartOptions}
+					width={300}
+					height={300}
+				/>
 			</div>
 		);
 	}
@@ -462,30 +467,37 @@ function StatsChart(props){
 
 function ModeStats(props){
 	let modeData = props.modeData;
-
 	let stats_season = [];
 	let stats_overall = [];
 
 	modeData.map((curr, index) => {
 		let temp = Object.entries(curr).splice(2,);
-
+		console.log(curr, index);
 		// parse the data into two categoris: overall stats and season stats
 		switch(curr.Mode){
 			case "Overall-Solo":
+				stats_overall[0] = temp;
+				break;
 			case "Overall-Duo":
+				stats_overall[1] = temp;
+				break;
 			case "Overall-Squad":
-				stats_overall.push(temp);
+				stats_overall[2] = temp;
 				break;
 			case "Season-Solo":
+				stats_season[0] = temp;
+				break;
 			case "Season-Duo":
+				stats_season[1] = temp;
+				break;
 			case "Season-Squad":
-				stats_season.push(temp);
+				stats_season[2] = temp;
 				break;
 			default: break;
 		}
-		return temp;
 	});
 
+	//console.log(stats_season);
 	return(
 		<div className="mode-stats">
 			<StatsChart stats={stats_overall} className="mode-stats"/>
@@ -522,7 +534,6 @@ function UserInfo(props){
 					platform={platform} 
 					handleCheck={props.handleCheck}
 				/>
-				<div className="lifetime-title">Overall Statistics</div>
 				<OverallStats data={curr} />
 				<div className="mode-title">Game Mode Statistics</div>
 				<ModeStats modeData={relevant_data} />
@@ -573,7 +584,7 @@ class Site extends React.Component{
 	render(){
 		return(
 			<div id="content">
-				<nav className="navbar navbar-dark bg-dark">
+				<nav className="navbar sticky-top">
 					<img id="logo" alt="fortnite logo" src={logo} />
 					<Form  
 						handleNewInfo={(newData) => this.handleNewInfo(newData)}
